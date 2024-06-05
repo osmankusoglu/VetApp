@@ -3,7 +3,7 @@ import axios from "axios";
 import "./Customer.css";
 
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import { Button, Typography } from "@mui/material";
 
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -137,7 +137,19 @@ function Customer() {
     <div>
       <div className="div-table">
         <div>
-          <h3 className="title-h3">Add New Customer</h3>
+          <br />
+          <Typography
+            variant="h4"
+            style={{
+              color: "white",
+              backgroundColor: "#1abc9c",
+              padding: "10px",
+              borderRadius: "4px",
+              fontSize: "30px",
+            }}
+          >
+            Add New Customer
+          </Typography>
           <br />
           <TextField
             variant="standard"
@@ -197,7 +209,19 @@ function Customer() {
         </div>
         <br />
         <div>
-          <h3 className="title-h3">Update Customer</h3>
+          <br />
+          <Typography
+            variant="h4"
+            style={{
+              color: "white",
+              backgroundColor: "#1abc9c",
+              padding: "10px",
+              borderRadius: "4px",
+              fontSize: "30px",
+            }}
+          >
+            Update Customer
+          </Typography>
           <br />
           <TextField
             variant="standard"
@@ -259,13 +283,82 @@ function Customer() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Customer Name</StyledTableCell>
-              <StyledTableCell align="left">Customer Email</StyledTableCell>
-              <StyledTableCell align="left">Customer Phone</StyledTableCell>
-              <StyledTableCell align="left">Customer Address</StyledTableCell>
-              <StyledTableCell align="left">Customer City</StyledTableCell>
-              <StyledTableCell align="left">Customer Update</StyledTableCell>
-              <StyledTableCell align="left">Customer Delete</StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+              >
+                Customer Name
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Customer Email
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Customer Phone
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Customer Address
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Customer City
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Customer Update
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Customer Delete
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -280,6 +373,7 @@ function Customer() {
                 <StyledTableCell align="left">{cust.city}</StyledTableCell>
                 <StyledTableCell align="left">
                   <Button
+                    style={{ backgroundColor: "#f39c12", color: "white" }}
                     variant="contained"
                     endIcon={<SendIcon />}
                     onClick={handleUpdateCustomerBtn}
@@ -290,6 +384,7 @@ function Customer() {
                 </StyledTableCell>
                 <StyledTableCell align="left">
                   <Button
+                    style={{ backgroundColor: "#e74c3c", color: "white" }}
                     variant="outlined"
                     startIcon={<DeleteIcon />}
                     onClick={handleDeleteCustomer}

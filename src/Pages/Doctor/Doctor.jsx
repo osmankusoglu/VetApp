@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "./Doctor.css";
 
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import { Button, Typography } from "@mui/material";
 
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -134,7 +133,19 @@ function Doctor() {
     <div>
       <div className="div-table">
         <div>
-          <h3 className="title-h3">Add New Doctor</h3>
+          <br />
+          <Typography
+            variant="h4"
+            style={{
+              color: "white",
+              backgroundColor: "#1abc9c",
+              padding: "10px",
+              borderRadius: "4px",
+              fontSize: "30px",
+            }}
+          >
+            Add New Doctor
+          </Typography>
           <br />
           <TextField
             variant="standard"
@@ -194,7 +205,19 @@ function Doctor() {
         </div>
         <br />
         <div>
-          <h3 className="title-h3">Update Doctor</h3>
+          <br />
+          <Typography
+            variant="h4"
+            style={{
+              color: "white",
+              backgroundColor: "#1abc9c",
+              padding: "10px",
+              borderRadius: "4px",
+              fontSize: "30px",
+            }}
+          >
+            Update Doctor
+          </Typography>
           <br />
           <TextField
             variant="standard"
@@ -256,13 +279,82 @@ function Doctor() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Doctor Name</StyledTableCell>
-              <StyledTableCell align="left">Doctor Email</StyledTableCell>
-              <StyledTableCell align="left">Doctor Phone</StyledTableCell>
-              <StyledTableCell align="left">Doctor Address</StyledTableCell>
-              <StyledTableCell align="left">Doctor City</StyledTableCell>
-              <StyledTableCell align="left">Doctor Update</StyledTableCell>
-              <StyledTableCell align="left">Doctor Delete</StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+              >
+                Doctor Name
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Doctor Email
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Doctor Phone
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Doctor Address
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Doctor City
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Doctor Update
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Doctor Delete
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -277,6 +369,7 @@ function Doctor() {
                 <StyledTableCell align="left">{doct.city}</StyledTableCell>
                 <StyledTableCell align="left">
                   <Button
+                    style={{ backgroundColor: "#f39c12", color: "white" }}
                     variant="contained"
                     endIcon={<SendIcon />}
                     onClick={handleUpdateDoctorBtn}
@@ -287,6 +380,7 @@ function Doctor() {
                 </StyledTableCell>
                 <StyledTableCell align="left">
                   <Button
+                    style={{ backgroundColor: "#e74c3c", color: "white" }}
                     variant="outlined"
                     startIcon={<DeleteIcon />}
                     onClick={handleDeleteDoctor}
