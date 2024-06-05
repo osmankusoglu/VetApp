@@ -20,6 +20,7 @@ const pagesRouter = [
   { route: "", title: "Home" },
   { route: "customer", title: "Customer" },
   { route: "doctor", title: "Doctor" },
+  { route: "animal", title: "Animal" },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 

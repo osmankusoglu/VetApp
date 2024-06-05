@@ -137,7 +137,7 @@ function Customer() {
     <div>
       <div className="div-table">
         <div>
-          <h3>Add New Customer</h3>
+          <h3 className="title-h3">Add New Customer</h3>
           <br />
           <TextField
             variant="standard"
@@ -197,7 +197,7 @@ function Customer() {
         </div>
         <br />
         <div>
-          <h3>Update Customer</h3>
+          <h3 className="title-h3">Update Customer</h3>
           <br />
           <TextField
             variant="standard"
