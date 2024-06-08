@@ -5,6 +5,7 @@ import "./Customer.css";
 import TextField from "@mui/material/TextField";
 import { Button, Typography } from "@mui/material";
 
+import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -134,79 +135,82 @@ function Customer() {
   }));
 
   return (
-    <div>
-      <div className="div-table">
-        <div>
-          <br />
-          <Typography
-            variant="h4"
-            style={{
-              color: "white",
-              backgroundColor: "#1abc9c",
-              padding: "10px",
-              borderRadius: "4px",
-              fontSize: "30px",
-            }}
-          >
-            Add New Customer
-          </Typography>
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={newCustomer.name}
-            onChange={handleNewCustomerInputChange}
-          />
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={newCustomer.email}
-            onChange={handleNewCustomerInputChange}
-          />
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            value={newCustomer.phone}
-            onChange={handleNewCustomerInputChange}
-          />
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={newCustomer.address}
-            onChange={handleNewCustomerInputChange}
-          />
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="city"
-            placeholder="City"
-            value={newCustomer.city}
-            onChange={handleNewCustomerInputChange}
-          />
-          <br />
-          <br />
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleAddNewCustomer}
-          >
-            Add Customer
-          </Button>
-          <br />
-          <br />
-        </div>
+    <Box>
+      <TableContainer component={Paper}>
+        <br />
+        <Typography
+          variant="h4"
+          style={{
+            color: "white",
+            backgroundColor: "#1abc9c",
+            padding: "20px",
+            borderRadius: "4px",
+            fontSize: "30px",
+          }}
+        >
+          Add New Customer
+        </Typography>
+        <br />
+        <br />
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={newCustomer.name}
+          onChange={handleNewCustomerInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="email"
+          placeholder="Email"
+          value={newCustomer.email}
+          onChange={handleNewCustomerInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="phone"
+          placeholder="Phone"
+          value={newCustomer.phone}
+          onChange={handleNewCustomerInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={newCustomer.address}
+          onChange={handleNewCustomerInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="city"
+          placeholder="City"
+          value={newCustomer.city}
+          onChange={handleNewCustomerInputChange}
+        />
+
+        <Button
+          sx={{ marginLeft: 13, width: 200, height: 40 }}
+          variant="contained"
+          color="success"
+          onClick={handleAddNewCustomer}
+        >
+          Add Customer
+        </Button>
+
         <br />
         <div>
           <br />
@@ -215,7 +219,7 @@ function Customer() {
             style={{
               color: "white",
               backgroundColor: "#1abc9c",
-              padding: "10px",
+              padding: "20px",
               borderRadius: "4px",
               fontSize: "30px",
             }}
@@ -223,7 +227,9 @@ function Customer() {
             Update Customer
           </Typography>
           <br />
+          <br />
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="name"
@@ -231,8 +237,9 @@ function Customer() {
             value={updateCustomer.name}
             onChange={handleUpdateCustomerInputChange}
           />
-          <br />
+
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="email"
@@ -240,8 +247,9 @@ function Customer() {
             value={updateCustomer.email}
             onChange={handleUpdateCustomerInputChange}
           />
-          <br />
+
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="phone"
@@ -249,8 +257,9 @@ function Customer() {
             value={updateCustomer.phone}
             onChange={handleUpdateCustomerInputChange}
           />
-          <br />
+
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="address"
@@ -258,8 +267,9 @@ function Customer() {
             value={updateCustomer.address}
             onChange={handleUpdateCustomerInputChange}
           />
-          <br />
+
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="city"
@@ -267,9 +277,9 @@ function Customer() {
             value={updateCustomer.city}
             onChange={handleUpdateCustomerInputChange}
           />
-          <br />
-          <br />
+
           <Button
+            sx={{ marginLeft: 13, width: 200, height: 40 }}
             variant="contained"
             color="success"
             onClick={handleUpdateCustomer}
@@ -278,7 +288,8 @@ function Customer() {
           </Button>
         </div>
         <br />
-      </div>
+        <br />
+      </TableContainer>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -412,7 +423,7 @@ function Customer() {
           </li>
         ))}
       </ul> */}
-    </div>
+    </Box>
   );
 }
 

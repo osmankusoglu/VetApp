@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -150,204 +150,216 @@ function Animal() {
   }));
 
   return (
-    <div>
-      <div className="div-table">
-        <div>
-          <br />
-          <Typography
-            variant="h4"
-            style={{
-              color: "white",
-              backgroundColor: "#1abc9c",
-              padding: "10px",
-              borderRadius: "4px",
-              fontSize: "30px",
-            }}
+    <Box>
+      <div>
+        <br />
+        <Typography
+          variant="h4"
+          style={{
+            color: "white",
+            backgroundColor: "#1abc9c",
+            padding: "10px",
+            borderRadius: "4px",
+            fontSize: "30px",
+          }}
+        >
+          Add Animal
+        </Typography>
+        <br />
+        <br />
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Animal Name"
+          variant="standard"
+          name="name"
+          value={newAnimal.name}
+          onChange={handleNewAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Species"
+          variant="standard"
+          name="species"
+          value={newAnimal.species}
+          onChange={handleNewAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Breed"
+          variant="standard"
+          name="breed"
+          value={newAnimal.breed}
+          onChange={handleNewAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Gender"
+          variant="standard"
+          name="gender"
+          value={newAnimal.gender}
+          onChange={handleNewAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Date of Birth"
+          variant="standard"
+          name="dateOfBirth"
+          value={newAnimal.dateOfBirth}
+          onChange={handleNewAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Colour"
+          variant="standard"
+          name="colour"
+          value={newAnimal.colour}
+          onChange={handleNewAnimalInputChange}
+        />
+
+        <FormControl sx={{ minWidth: 223, marginLeft: 4, height: 20 }}>
+          <InputLabel id="demo-simple-select-helper-label">
+            Select Customer
+          </InputLabel>
+          <Select
+            labelId="Customer"
+            id="SelectCustomer select-label"
+            value={newAnimal.customer?.id || ""}
+            label="Müşteri Seçiniz"
+            onChange={handleCustomerSelectChange}
           >
-            Update Animal
-          </Typography>
-          <br />
-          <TextField
-            label="Animal Name"
-            variant="standard"
-            name="name"
-            value={updateAnimal.name}
-            onChange={handleUpdateAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Species"
-            variant="standard"
-            name="species"
-            value={updateAnimal.species}
-            onChange={handleUpdateAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Breed"
-            variant="standard"
-            name="breed"
-            value={updateAnimal.breed}
-            onChange={handleUpdateAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Gender"
-            variant="standard"
-            name="gender"
-            value={updateAnimal.gender}
-            onChange={handleUpdateAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Date of Birth"
-            variant="standard"
-            name="dateOfBirth"
-            value={updateAnimal.dateOfBirth}
-            onChange={handleUpdateAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Colour"
-            variant="standard"
-            name="colour"
-            value={updateAnimal.colour}
-            onChange={handleUpdateAnimalInputChange}
-          />
-          <br />
-          <br />
-          <FormControl sx={{ minWidth: 223 }}>
-            <InputLabel id="demo-simple-select-helper-label">
-              Select Customer
-            </InputLabel>
-            <Select
-              labelId="Customer"
-              id="SelectCustomer select-label"
-              value={updateAnimal.customer?.id || ""}
-              label="Müşteri Seçiniz"
-              onChange={(e) => {
-                const id = e.target.value;
-                const selectedCustomer = customer.find((cus) => cus.id === +id);
-                setUpdateAnimal((prev) => ({
-                  ...prev,
-                  customer: selectedCustomer,
-                }));
-              }}
-            >
-              {customer?.map((cus, index) => (
-                <MenuItem key={index} value={cus.id}>
-                  {cus.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <br />
-          <br />
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleUpdateAnimal}
-          >
-            Update Animal
-          </Button>
-          <br />
-        </div>
-        <div>
-          <br />
-          <Typography
-            variant="h4"
-            style={{
-              color: "white",
-              backgroundColor: "#1abc9c",
-              padding: "10px",
-              borderRadius: "4px",
-              fontSize: "30px",
-            }}
-          >
-            Add Animal
-          </Typography>
-          {/* <h3>Add Animal</h3> */}
-          <br />
-          <TextField
-            label="Animal Name"
-            variant="standard"
-            name="name"
-            value={newAnimal.name}
-            onChange={handleNewAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Species"
-            variant="standard"
-            name="species"
-            value={newAnimal.species}
-            onChange={handleNewAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Breed"
-            variant="standard"
-            name="breed"
-            value={newAnimal.breed}
-            onChange={handleNewAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Gender"
-            variant="standard"
-            name="gender"
-            value={newAnimal.gender}
-            onChange={handleNewAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Date of Birth"
-            variant="standard"
-            name="dateOfBirth"
-            value={newAnimal.dateOfBirth}
-            onChange={handleNewAnimalInputChange}
-          />
-          <br />
-          <TextField
-            label="Colour"
-            variant="standard"
-            name="colour"
-            value={newAnimal.colour}
-            onChange={handleNewAnimalInputChange}
-          />
-          <br />
-          <br />
-          <FormControl sx={{ minWidth: 223 }}>
-            <InputLabel id="demo-simple-select-helper-label">
-              Select Customer
-            </InputLabel>
-            <Select
-              labelId="Customer"
-              id="SelectCustomer select-label"
-              value={newAnimal.customer?.id || ""}
-              label="Müşteri Seçiniz"
-              onChange={handleCustomerSelectChange}
-            >
-              {customer?.map((cus, index) => (
-                <MenuItem key={index} value={cus.id}>
-                  {cus.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <br />
-          <br />
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleAddNewAnimal}
-          >
-            Add New Animal
-          </Button>
-          <br />
-          <br />
-        </div>
+            {customer?.map((cus, index) => (
+              <MenuItem key={index} value={cus.id}>
+                {cus.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <Button
+          sx={{ marginLeft: 4, height: 54, width: 223 }}
+          variant="contained"
+          color="success"
+          onClick={handleAddNewAnimal}
+        >
+          Add Animal
+        </Button>
+        <br />
+        <br />
       </div>
+      <div>
+        <br />
+        <Typography
+          variant="h4"
+          style={{
+            color: "white",
+            backgroundColor: "#1abc9c",
+            padding: "10px",
+            borderRadius: "4px",
+            fontSize: "30px",
+          }}
+        >
+          Update Animal
+        </Typography>
+        <br />
+        <br />
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Animal Name"
+          variant="standard"
+          name="name"
+          value={updateAnimal.name}
+          onChange={handleUpdateAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Species"
+          variant="standard"
+          name="species"
+          value={updateAnimal.species}
+          onChange={handleUpdateAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Breed"
+          variant="standard"
+          name="breed"
+          value={updateAnimal.breed}
+          onChange={handleUpdateAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Gender"
+          variant="standard"
+          name="gender"
+          value={updateAnimal.gender}
+          onChange={handleUpdateAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Date of Birth"
+          variant="standard"
+          name="dateOfBirth"
+          value={updateAnimal.dateOfBirth}
+          onChange={handleUpdateAnimalInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Colour"
+          variant="standard"
+          name="colour"
+          value={updateAnimal.colour}
+          onChange={handleUpdateAnimalInputChange}
+        />
+
+        <FormControl sx={{ minWidth: 223, marginLeft: 4, height: 20 }}>
+          <InputLabel id="demo-simple-select-helper-label">
+            Select Customer
+          </InputLabel>
+          <Select
+            labelId="Customer"
+            id="SelectCustomer select-label"
+            value={updateAnimal.customer?.id || ""}
+            label="Select Customer"
+            onChange={(e) => {
+              const id = e.target.value;
+              const selectedCustomer = customer.find((cus) => cus.id === +id);
+              setUpdateAnimal((prev) => ({
+                ...prev,
+                customer: selectedCustomer,
+              }));
+            }}
+          >
+            {customer?.map((cus, index) => (
+              <MenuItem key={index} value={cus.id}>
+                {cus.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <Button
+          sx={{ marginLeft: 4, height: 54, width: 223 }}
+          variant="contained"
+          color="success"
+          onClick={handleUpdateAnimal}
+        >
+          Update Animal
+        </Button>
+        <br />
+        <br />
+        <br />
+      </div>
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -511,7 +523,7 @@ function Animal() {
           </li>
         ))}
       </ul> */}
-    </div>
+    </Box>
   );
 }
 

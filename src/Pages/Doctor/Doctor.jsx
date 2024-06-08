@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 import TextField from "@mui/material/TextField";
-import { Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -14,9 +14,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
+import AvailableDate from "../AvailableDate/AvailableDate";
 
 function Doctor() {
   const [doctor, setDoctor] = useState();
+
   const [update, setUpdate] = useState(false);
   const [newDoctor, setNewDoctor] = useState({
     name: "",
@@ -129,80 +131,85 @@ function Doctor() {
     },
   }));
 
+  ////////////////
+
   return (
-    <div>
-      <div className="div-table">
-        <div>
-          <br />
-          <Typography
-            variant="h4"
-            style={{
-              color: "white",
-              backgroundColor: "#1abc9c",
-              padding: "10px",
-              borderRadius: "4px",
-              fontSize: "30px",
-            }}
-          >
-            Add New Doctor
-          </Typography>
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={newDoctor.name}
-            onChange={handleNewDoctorInputChange}
-          />
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={newDoctor.email}
-            onChange={handleNewDoctorInputChange}
-          />
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            value={newDoctor.phone}
-            onChange={handleNewDoctorInputChange}
-          />
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={newDoctor.address}
-            onChange={handleNewDoctorInputChange}
-          />
-          <br />
-          <TextField
-            variant="standard"
-            type="text"
-            name="city"
-            placeholder="City"
-            value={newDoctor.city}
-            onChange={handleNewDoctorInputChange}
-          />
-          <br />
-          <br />
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleAddNewDoctor}
-          >
-            Add Doctor
-          </Button>
-          <br />
-          <br />
-        </div>
+    <Box>
+      <TableContainer component={Paper}>
+        <br />
+        <Typography
+          variant="h4"
+          style={{
+            color: "white",
+            backgroundColor: "#1abc9c",
+            padding: "20px",
+            borderRadius: "4px",
+            fontSize: "30px",
+          }}
+        >
+          Add New Doctor
+        </Typography>
+        <br />
+        <br />
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={newDoctor.name}
+          onChange={handleNewDoctorInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="email"
+          placeholder="Email"
+          value={newDoctor.email}
+          onChange={handleNewDoctorInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="phone"
+          placeholder="Phone"
+          value={newDoctor.phone}
+          onChange={handleNewDoctorInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={newDoctor.address}
+          onChange={handleNewDoctorInputChange}
+        />
+
+        <TextField
+          sx={{ marginLeft: 13, marginTop: 1 }}
+          variant="standard"
+          type="text"
+          name="city"
+          placeholder="City"
+          value={newDoctor.city}
+          onChange={handleNewDoctorInputChange}
+        />
+
+        <Button
+          sx={{ marginLeft: 13, width: 200, height: 40 }}
+          variant="contained"
+          color="success"
+          onClick={handleAddNewDoctor}
+        >
+          Add Doctor
+        </Button>
+        <br />
         <br />
         <div>
           <br />
@@ -219,7 +226,9 @@ function Doctor() {
             Update Doctor
           </Typography>
           <br />
+          <br />
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="name"
@@ -227,8 +236,9 @@ function Doctor() {
             value={updateDoctor.name}
             onChange={handleUpdateDoctorInputChange}
           />
-          <br />
+
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="email"
@@ -236,8 +246,9 @@ function Doctor() {
             value={updateDoctor.email}
             onChange={handleUpdateDoctorInputChange}
           />
-          <br />
+
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="phone"
@@ -245,8 +256,9 @@ function Doctor() {
             value={updateDoctor.phone}
             onChange={handleUpdateDoctorInputChange}
           />
-          <br />
+
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="address"
@@ -254,8 +266,9 @@ function Doctor() {
             value={updateDoctor.address}
             onChange={handleUpdateDoctorInputChange}
           />
-          <br />
+
           <TextField
+            sx={{ marginLeft: 13, marginTop: 1 }}
             variant="standard"
             type="text"
             name="city"
@@ -263,9 +276,9 @@ function Doctor() {
             value={updateDoctor.city}
             onChange={handleUpdateDoctorInputChange}
           />
-          <br />
-          <br />
+
           <Button
+            sx={{ marginLeft: 13, width: 200, height: 40 }}
             variant="contained"
             color="success"
             onClick={handleUpdateDoctor}
@@ -274,7 +287,8 @@ function Doctor() {
           </Button>
         </div>
         <br />
-      </div>
+        <br />
+      </TableContainer>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -357,6 +371,10 @@ function Doctor() {
               </StyledTableCell>
             </TableRow>
           </TableHead>
+          <TableBody> </TableBody>
+        </Table>
+        <br />
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableBody>
             {doctor?.map((doct, index) => (
               <StyledTableRow key={index}>
@@ -394,6 +412,7 @@ function Doctor() {
           </TableBody>
         </Table>
       </TableContainer>
+      <br />
 
       {/* <ul>
         {doctor?.map((cust, index) => (
@@ -408,7 +427,8 @@ function Doctor() {
           </li>
         ))}
       </ul> */}
-    </div>
+      <AvailableDate />
+    </Box>
   );
 }
 

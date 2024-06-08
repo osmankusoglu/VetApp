@@ -21,6 +21,10 @@ const pagesRouter = [
   { route: "customer", title: "Customer" },
   { route: "doctor", title: "Doctor" },
   { route: "animal", title: "Animal" },
+  { route: "appointment", title: "Appointment" },
+  { route: "vaccination", title: "Vaccination" },
+  { route: "report", title: "Report" },
+  // { route: "availableDate", title: "Available Date" },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
