@@ -26,6 +26,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+
 dayjs.extend(utc);
 
 function AvailableDate() {
@@ -34,10 +37,30 @@ function AvailableDate() {
     doctorId: "",
   };
 
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [deleteMessage, setDeleteMessage] = useState(null);
   const [availableDate, setAvailableDate] = useState([]);
   const [doctor, setDoctor] = useState([]);
   const [update, setUpdate] = useState(false);
   const [newDate, setNewDate] = useState({ ...initState });
+
+  useEffect(() => {
+    if (deleteMessage) {
+      const timer = setTimeout(() => {
+        setDeleteMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [deleteMessage]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   useEffect(() => {
     axios
@@ -68,9 +91,12 @@ function AvailableDate() {
         ...newDate,
         workDate: newDate.workDay,
       })
-      .then(() => setUpdate(false))
-      .then(() => setNewDate({ ...initState }));
-    console.log("New Date Added:", newDate);
+      .then((res) => {
+        console.log(res);
+        setSuccessMessage("Added successfully!");
+        setUpdate(false);
+        setNewDate({ ...initState });
+      });
   };
 
   const handleDeleteDate = (id) => {
@@ -79,6 +105,7 @@ function AvailableDate() {
         `${import.meta.env.VITE_APP_BASE_URL}/api/v1/available-dates/${id}`
       )
       .then(() => setUpdate(false));
+    setDeleteMessage("Deleted successfully!");
   };
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -158,6 +185,7 @@ function AvailableDate() {
               />
             </DemoContainer>
           </LocalizationProvider>
+          <br />
           <Button
             variant="contained"
             color="success"
@@ -166,6 +194,11 @@ function AvailableDate() {
             Add New Available Date
           </Button>
         </Box>
+        {successMessage && (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
         <br />
         <br />
       </div>
@@ -233,6 +266,11 @@ function AvailableDate() {
               </StyledTableRow>
             ))}
           </TableBody>
+          {deleteMessage && (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+              <Alert severity="error">{deleteMessage}</Alert>
+            </Stack>
+          )}
         </Table>
       </TableContainer>
     </div>

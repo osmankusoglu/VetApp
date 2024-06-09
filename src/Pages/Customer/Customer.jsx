@@ -17,9 +17,16 @@ import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
 
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+
 function Customer() {
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [updateMessage, setUpdateMessage] = useState(null);
+  const [deleteMessage, setDeleteMessage] = useState(null);
   const [customer, setCustomer] = useState();
   const [update, setUpdate] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const [newCustomer, setNewCustomer] = useState({
     name: "",
     phone: "",
@@ -36,6 +43,33 @@ function Customer() {
     address: "",
     city: "",
   });
+
+  useEffect(() => {
+    if (deleteMessage) {
+      const timer = setTimeout(() => {
+        setDeleteMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [deleteMessage]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (updateMessage) {
+      const timer = setTimeout(() => {
+        setUpdateMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [updateMessage]);
 
   useEffect(() => {
     axios
@@ -59,17 +93,18 @@ function Customer() {
         import.meta.env.VITE_APP_BASE_URL + "/api/v1/customers",
         newCustomer
       )
-      .then((res) => console.log(res))
-      .then(setUpdate(false))
-      .then(() =>
+      .then((res) => {
+        console.log(res);
+        setSuccessMessage("Added successfully!");
+        setUpdate(false);
         setNewCustomer({
           name: "",
           phone: "",
           email: "",
           address: "",
           city: "",
-        })
-      );
+        });
+      });
   };
 
   const handleUpdateCustomer = () => {
@@ -79,8 +114,9 @@ function Customer() {
         `${import.meta.env.VITE_APP_BASE_URL}/api/v1/customers/${id}`,
         updateCustomer
       )
-      .then(() => setUpdate(false))
-      .then(() =>
+      .then(() => {
+        setUpdateMessage("Updated successfully!");
+        setUpdate(false);
         setUpdateCustomer({
           id: "",
           name: "",
@@ -88,8 +124,8 @@ function Customer() {
           email: "",
           address: "",
           city: "",
-        })
-      );
+        });
+      });
   };
 
   const handleUpdateCustomerInputChange = (e) => {
@@ -110,7 +146,13 @@ function Customer() {
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/customers/${id}`)
       .then(() => setUpdate(false));
+    setDeleteMessage("Deleted successfully!");
   };
+
+  // Müşterileri filtrelemek için bir fonksiyon
+  const filteredCustomers = customer?.filter((cust) =>
+    cust.name.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   /////////////////////////////////
 
@@ -202,6 +244,11 @@ function Customer() {
           onChange={handleNewCustomerInputChange}
         />
 
+        {successMessage && (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
         <Button
           sx={{ marginLeft: 13, width: 200, height: 40 }}
           variant="contained"
@@ -278,6 +325,11 @@ function Customer() {
             onChange={handleUpdateCustomerInputChange}
           />
 
+          {updateMessage && (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+              <Alert severity="success">{updateMessage}</Alert>
+            </Stack>
+          )}
           <Button
             sx={{ marginLeft: 13, width: 200, height: 40 }}
             variant="contained"
@@ -373,7 +425,7 @@ function Customer() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {customer?.map((cust, index) => (
+            {filteredCustomers?.map((cust, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
                   {cust.name}
@@ -407,22 +459,32 @@ function Customer() {
               </StyledTableRow>
             ))}
           </TableBody>
+          {deleteMessage && (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+              <Alert severity="error">{deleteMessage}</Alert>
+            </Stack>
+          )}
         </Table>
       </TableContainer>
-
-      {/* <ul>
-        {customer?.map((cust, index) => (
-          <li key={index}>
-            <Button onClick={handleDeleteCustomer} id={cust.id}>
-              DELETE
-            </Button>{" "}
-            -{" "}
-            <Button onClick={handleUpdateCustomerBtn} id={index}>
-              UPDATE
-            </Button>
-          </li>
-        ))}
-      </ul> */}
+      <Typography
+        style={{
+          color: "white",
+          backgroundColor: "#1aec9c",
+          padding: "10px",
+          fontSize: "20px",
+        }}
+        sx={{ fontWeight: "700" }}
+      >
+        Search Customer Name
+      </Typography>
+      <br />
+      <TextField
+        sx={{ marginLeft: 5, marginTop: 1 }}
+        variant="outlined"
+        placeholder="Search Customer Name"
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
     </Box>
   );
 }

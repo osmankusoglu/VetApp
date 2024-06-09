@@ -16,9 +16,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
 import AvailableDate from "../AvailableDate/AvailableDate";
 
-function Doctor() {
-  const [doctor, setDoctor] = useState();
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 
+function Doctor() {
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [updateMessage, setUpdateMessage] = useState(null);
+  const [deleteMessage, setDeleteMessage] = useState(null);
+  const [doctor, setDoctor] = useState();
   const [update, setUpdate] = useState(false);
   const [newDoctor, setNewDoctor] = useState({
     name: "",
@@ -36,6 +41,33 @@ function Doctor() {
     address: "",
     city: "",
   });
+
+  useEffect(() => {
+    if (deleteMessage) {
+      const timer = setTimeout(() => {
+        setDeleteMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [deleteMessage]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (updateMessage) {
+      const timer = setTimeout(() => {
+        setUpdateMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [updateMessage]);
 
   useEffect(() => {
     axios
@@ -56,17 +88,18 @@ function Doctor() {
   const handleAddNewDoctor = () => {
     axios
       .post(import.meta.env.VITE_APP_BASE_URL + "/api/v1/doctors", newDoctor)
-      .then((res) => console.log(res))
-      .then(setUpdate(false))
-      .then(() =>
+      .then((res) => {
+        console.log(res);
+        setSuccessMessage("Added successfully!");
+        setUpdate(false);
         setNewDoctor({
           name: "",
           phone: "",
           email: "",
           address: "",
           city: "",
-        })
-      );
+        });
+      });
   };
 
   const handleUpdateDoctor = () => {
@@ -76,8 +109,9 @@ function Doctor() {
         `${import.meta.env.VITE_APP_BASE_URL}/api/v1/doctors/${id}`,
         updateDoctor
       )
-      .then(() => setUpdate(false))
-      .then(() =>
+      .then((res) => {
+        console.log(res);
+        setUpdate(false);
         setUpdateDoctor({
           id: "",
           name: "",
@@ -85,8 +119,9 @@ function Doctor() {
           email: "",
           address: "",
           city: "",
-        })
-      );
+        });
+        setUpdateMessage("Updated successfully!");
+      });
   };
 
   const handleUpdateDoctorInputChange = (e) => {
@@ -107,6 +142,7 @@ function Doctor() {
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/doctors/${id}`)
       .then(() => setUpdate(false));
+    setDeleteMessage("Deleted successfully!");
   };
 
   /////////////////////////////////
@@ -209,6 +245,11 @@ function Doctor() {
         >
           Add Doctor
         </Button>
+        {successMessage && (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
         <br />
         <br />
         <div>
@@ -276,7 +317,11 @@ function Doctor() {
             value={updateDoctor.city}
             onChange={handleUpdateDoctorInputChange}
           />
-
+          {updateMessage && (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+              <Alert severity="success">{updateMessage}</Alert>
+            </Stack>
+          )}
           <Button
             sx={{ marginLeft: 13, width: 200, height: 40 }}
             variant="contained"
@@ -410,6 +455,11 @@ function Doctor() {
               </StyledTableRow>
             ))}
           </TableBody>
+          {deleteMessage && (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+              <Alert severity="error">{deleteMessage}</Alert>
+            </Stack>
+          )}
         </Table>
       </TableContainer>
       <br />

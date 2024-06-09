@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import { Box, Button, Typography } from "@mui/material";
-
 import { styled } from "@mui/material/styles";
+
 import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SendIcon from "@mui/icons-material/Send";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 
 function Vaccination() {
   const initState = {
@@ -36,18 +38,59 @@ function Vaccination() {
     },
   };
 
-  const [vaccination, setVaccination] = useState([]);
-  const [animal, setAnimal] = useState([]);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [deleteMessage, setDeleteMessage] = useState(null);
+  const [vaccinations, setVaccinations] = useState([]);
+  const [animals, setAnimals] = useState([]);
   const [newVaccination, setNewVaccination] = useState({ ...initState });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/vaccinations")
-      .then((res) => setVaccination(res.data.content));
+      .then((res) => setVaccinations(res.data.content));
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/animals")
-      .then((res) => setAnimal(res.data.content));
+      .then((res) => setAnimals(res.data.content));
   }, []);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const formattedStartDate = formatDate(startDate);
+      const formattedEndDate = formatDate(endDate);
+
+      axios
+        .get(
+          `${
+            import.meta.env.VITE_APP_BASE_URL
+          }/api/v1/vaccinations/searchByVaccinationRange?startDate=${startDate}&endDate=${endDate}`
+        )
+        .then((res) => {
+          console.log("API response:", res.data); // Burada API cevabını logla
+          setVaccinations(res.data.content);
+        });
+    }
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    if (deleteMessage) {
+      const timer = setTimeout(() => {
+        setDeleteMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [deleteMessage]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   const handleNewVaccinationInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,7 +102,7 @@ function Vaccination() {
 
   const handleAnimalSelectChange = (e) => {
     const id = e.target.value;
-    const selectedAnimal = animal.find((ani) => ani.id === +id);
+    const selectedAnimal = animals.find((ani) => ani.id === +id);
     setNewVaccination((prev) => ({
       ...prev,
       animalWithoutCustomer: selectedAnimal,
@@ -73,6 +116,7 @@ function Vaccination() {
         newVaccination
       )
       .then(() => {
+        setSuccessMessage("Added successfully!");
         setNewVaccination({ ...initState });
         window.location.reload();
       });
@@ -82,8 +126,40 @@ function Vaccination() {
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/vaccinations/${id}`)
       .then(() => {
-        setVaccination(vaccination.filter((vac) => vac.id !== id));
+        setVaccinations(vaccinations.filter((vac) => vac.id !== id));
+        setDeleteMessage("Deleted successfully!");
       });
+  };
+
+  const handleSearchTermChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const searchByAnimalName = (vaccinations, searchTerm) => {
+    if (!Array.isArray(vaccinations) || vaccinations.length === 0) {
+      return [];
+    }
+    if (!searchTerm) {
+      return vaccinations;
+    }
+    return vaccinations.filter((vac) =>
+      vac.animal.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  const formatDate = (dateString) => {
+    const [day, month, year] = dateString.split(".");
+    return `${year}-${month}-${day}`;
+  };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setStartDate("");
+    setEndDate("");
+    axios
+      .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/vaccinations")
+      .then((res) => setVaccinations(res.data.content))
+      .catch((error) => console.error("API error:", error));
   };
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -174,13 +250,18 @@ function Vaccination() {
             value={newVaccination.animalWithoutCustomer?.id || ""}
             onChange={handleAnimalSelectChange}
           >
-            {animal.map((ani) => (
+            {animals.map((ani) => (
               <MenuItem key={ani.id} value={ani.id}>
                 {ani.name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
+        {successMessage && (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -191,8 +272,9 @@ function Vaccination() {
         </Button>
       </div>
       <br />
-      <br />
 
+      <br />
+      <br />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -260,7 +342,7 @@ function Vaccination() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {vaccination.map((vac) => (
+            {searchByAnimalName(vaccinations, searchTerm).map((vac) => (
               <StyledTableRow key={vac.id}>
                 <StyledTableCell>{vac.name}</StyledTableCell>
                 <StyledTableCell>{vac.code}</StyledTableCell>
@@ -279,6 +361,111 @@ function Vaccination() {
                 </StyledTableCell>
               </StyledTableRow>
             ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <br />
+      {deleteMessage && (
+        <Stack sx={{ width: "100%" }} spacing={2}>
+          <Alert severity="error">{deleteMessage}</Alert>
+        </Stack>
+      )}
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1aec9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                sx={{ fontWeight: "700" }}
+              >
+                Vaccination Search by Animal Name
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1aec9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                sx={{ fontWeight: "700" }}
+              >
+                Vaccination Search by Start Date
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1aec9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                sx={{ fontWeight: "700" }}
+              >
+                Vaccination Search by Finish Date
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1aec9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                sx={{ fontWeight: "700" }}
+              >
+                Clear Filter
+              </StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <StyledTableCell>
+              <TextField
+                sx={{ marginLeft: 4, marginTop: 1 }}
+                label="Search by Animal Name"
+                variant="outlined"
+                value={searchTerm}
+                onChange={handleSearchTermChange}
+              />
+            </StyledTableCell>
+            <StyledTableCell>
+              <TextField
+                sx={{ marginLeft: 4, marginTop: 1 }}
+                label="Start Date"
+                type="date"
+                variant="outlined"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </StyledTableCell>
+            <StyledTableCell>
+              <TextField
+                sx={{ marginLeft: 4, marginTop: 1 }}
+                label="End Date"
+                type="date"
+                variant="outlined"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </StyledTableCell>
+            <StyledTableCell>
+              <Button
+                sx={{ height: 54, width: 223, marginTop: 1 }}
+                variant="contained"
+                color="success"
+                onClick={clearFilters}
+              >
+                Clear Filter
+              </Button>
+            </StyledTableCell>
           </TableBody>
         </Table>
       </TableContainer>

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import Customer from "./Pages/Customer/Customer";
 import Doctor from "./Pages/Doctor/Doctor";
@@ -8,10 +8,17 @@ import Appointment from "./Pages/Appointment/Appointment";
 import AvailableDate from "./Pages/AvailableDate/AvailableDate";
 import Vaccination from "./Pages/Vaccination/Vaccination";
 import Report from "./Pages/Report/Report";
+
 function App() {
+  const location = useLocation();
+
+  // Sadece '/' (Home) yolunda Navbar'ı gizle
+  const hideNavbar = location.pathname === "/";
+
   return (
-    <>
-      <Navbar />
+    <div>
+      {/* Home sayfası dışındaki diğer sayfalarda Navbar'ı göster */}
+      {!hideNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="customer" element={<Customer />} />
@@ -22,7 +29,7 @@ function App() {
         <Route path="vaccination" element={<Vaccination />} />
         <Route path="report" element={<Report />} />
       </Routes>
-    </>
+    </div>
   );
 }
 

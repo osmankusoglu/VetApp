@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { Box, Button, Typography } from "@mui/material";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import {
+  Box,
+  Button,
+  Typography,
+  FormControl,
+  InputLabel,
+  TextField,
+  MenuItem,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
+
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 
 function Appointment() {
   const initState = {
@@ -40,11 +46,46 @@ function Appointment() {
     },
   };
 
-  const [appointment, setAppointment] = useState();
-  const [doctor, setDoctor] = useState();
-  const [animal, setAnimal] = useState();
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [updateMessage, setUpdateMessage] = useState(null);
+  const [deleteMessage, setDeleteMessage] = useState(null);
+  const [appointment, setAppointment] = useState([]);
+  const [doctor, setDoctor] = useState([]);
+  const [animal, setAnimal] = useState([]);
+  const [update, setUpdate] = useState(false);
   const [newAppointment, setNewAppointment] = useState({ ...initState });
   const [updateAppointment, setUpdateAppointment] = useState({ ...initState });
+  const [searchDoctor, setSearchDoctor] = useState("");
+  const [searchAnimal, setSearchAnimal] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    if (deleteMessage) {
+      const timer = setTimeout(() => {
+        setDeleteMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [deleteMessage]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (updateMessage) {
+      const timer = setTimeout(() => {
+        setUpdateMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [updateMessage]);
 
   useEffect(() => {
     axios
@@ -116,9 +157,11 @@ function Appointment() {
         import.meta.env.VITE_APP_BASE_URL + "/api/v1/appointments",
         newAppointment
       )
-      .then(() => {
+      .then((res) => {
+        console.log(res);
+        setSuccessMessage("Added successfully!");
+        setUpdate(true);
         setNewAppointment({ ...initState });
-        window.location.reload();
       });
   };
 
@@ -130,9 +173,11 @@ function Appointment() {
         }`,
         updateAppointment
       )
-      .then(() => {
+      .then((res) => {
+        console.log(res);
+        setUpdateMessage("Updated successfully!");
+        setUpdate(false);
         setUpdateAppointment({ ...initState });
-        window.location.reload();
       });
   };
 
@@ -141,11 +186,58 @@ function Appointment() {
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/appointments/${id}`)
       .then(() => {
         setAppointment(appointment.filter((app) => app.id !== id));
+        setDeleteMessage("Deleted successfully!");
       });
   };
 
-  const handleEditAppointment = (appointment) => {
+  const handleNewUpdateAppointment = (appointment) => {
     setUpdateAppointment(appointment);
+  };
+
+  const handleDoctorSearchTermChange = (e) => {
+    setSearchDoctor(e.target.value);
+  };
+
+  const handleAnimalSearchTermChange = (e) => {
+    setSearchAnimal(e.target.value);
+  };
+
+  const clearFilters = () => {
+    setSearchDoctor("");
+    setSearchAnimal("");
+    setStartDate("");
+    setEndDate("");
+  };
+
+  const filterAppointment = (
+    appointment,
+    doctorTerm,
+    animalTerm,
+    startDate,
+    endDate
+  ) => {
+    return appointment.filter((appointment) => {
+      const doctorName = appointment.doctor.name.toLowerCase();
+      const animalName = appointment.animal.name.toLowerCase();
+      const doctorSearchTermMatch = doctorName.includes(
+        doctorTerm.toLowerCase()
+      );
+      const animalSearchTermMatch = animalName.includes(
+        animalTerm.toLowerCase()
+      );
+      const startDateMatch = startDate
+        ? new Date(appointment.appointmentDate) >= new Date(startDate)
+        : true;
+      const endDateMatch = endDate
+        ? new Date(appointment.appointmentDate) <= new Date(endDate)
+        : true;
+      return (
+        doctorSearchTermMatch &&
+        animalSearchTermMatch &&
+        startDateMatch &&
+        endDateMatch
+      );
+    });
   };
 
   return (
@@ -214,6 +306,11 @@ function Appointment() {
             ))}
           </Select>
         </FormControl>
+        {successMessage && (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -238,7 +335,6 @@ function Appointment() {
         >
           Update Appointment
         </Typography>
-        <br />
         <br />
         <TextField
           sx={{ marginLeft: 4, marginTop: 1 }}
@@ -288,6 +384,11 @@ function Appointment() {
             ))}
           </Select>
         </FormControl>
+        {updateMessage && (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert severity="success">{updateMessage}</Alert>
+          </Stack>
+        )}
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -300,7 +401,81 @@ function Appointment() {
       <br />
       <br />
 
+      <div>
+        <Typography
+          style={{
+            color: "white",
+            backgroundColor: "#1aec9c",
+            padding: "10px",
+            fontSize: "20px",
+          }}
+          sx={{ fontWeight: "700" }}
+        >
+          Filter Appointments
+        </Typography>
+        <br />
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1, width: 223 }}
+          label="Search by Doctor Name"
+          variant="standard"
+          value={searchDoctor}
+          onChange={handleDoctorSearchTermChange}
+        />
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1, width: 223 }}
+          label="Search by Animal Name"
+          variant="standard"
+          value={searchAnimal}
+          onChange={handleAnimalSearchTermChange}
+        />
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="Start Date"
+          type="datetime-local"
+          variant="standard"
+          name="startDate"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          sx={{ marginLeft: 4, marginTop: 1 }}
+          label="End Date"
+          type="datetime-local"
+          variant="standard"
+          name="endDate"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <Button
+          sx={{ marginLeft: 4, height: 54, width: 223 }}
+          variant="contained"
+          color="success"
+          onClick={clearFilters}
+        >
+          Clear Filters
+        </Button>
+      </div>
+
       <TableContainer component={Paper}>
+        <Typography
+          variant="h4"
+          style={{
+            color: "white",
+            backgroundColor: "#1abc9c",
+            padding: "10px",
+            borderRadius: "4px",
+            fontSize: "30px",
+            marginTop: "20px",
+          }}
+        >
+          Appointments
+        </Typography>
         <Table>
           <TableHead>
             <TableRow>
@@ -357,7 +532,13 @@ function Appointment() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {appointment?.map((appointment) => (
+            {filterAppointment(
+              appointment,
+              searchDoctor,
+              searchAnimal,
+              startDate,
+              endDate
+            ).map((appointment) => (
               <TableRow key={appointment.id}>
                 <TableCell>{appointment.appointmentDate}</TableCell>
                 <TableCell>{appointment.doctor.name}</TableCell>
@@ -367,7 +548,7 @@ function Appointment() {
                     style={{ backgroundColor: "#f39c12", color: "white" }}
                     variant="contained"
                     endIcon={<SendIcon />}
-                    onClick={() => handleEditAppointment(appointment)}
+                    onClick={() => handleNewUpdateAppointment(appointment)}
                   >
                     UPDATE
                   </Button>
@@ -389,6 +570,11 @@ function Appointment() {
               </TableRow>
             ))}
           </TableBody>
+          {deleteMessage && (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+              <Alert severity="error">{deleteMessage}</Alert>
+            </Stack>
+          )}
         </Table>
       </TableContainer>
     </Box>

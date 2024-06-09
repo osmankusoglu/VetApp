@@ -19,6 +19,9 @@ import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
 
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+
 function Animal() {
   const initState = {
     name: "",
@@ -30,6 +33,11 @@ function Animal() {
     customer: {},
   };
 
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [updateMessage, setUpdateMessage] = useState(null);
+  const [deleteMessage, setDeleteMessage] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [customerSearchValue, setCustomerSearchValue] = useState("");
   const [animal, setAnimal] = useState([]);
   const [customer, setCustomer] = useState([]);
   const [update, setUpdate] = useState(false);
@@ -47,6 +55,33 @@ function Animal() {
     colour: "",
     customer: {},
   });
+
+  useEffect(() => {
+    if (deleteMessage) {
+      const timer = setTimeout(() => {
+        setDeleteMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [deleteMessage]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (updateMessage) {
+      const timer = setTimeout(() => {
+        setUpdateMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [updateMessage]);
 
   useEffect(() => {
     axios
@@ -81,30 +116,32 @@ function Animal() {
   const handleAddNewAnimal = () => {
     axios
       .post(import.meta.env.VITE_APP_BASE_URL + "/api/v1/animals", newAnimal)
-      .then(() => setUpdate(false))
-      .then(() => setNewAnimal({ ...initState }));
+      .then((res) => {
+        console.log(res);
+        setSuccessMessage("Animal added successfully!");
+        setUpdate(false);
+        setNewAnimal({ ...initState });
+      });
   };
 
   const handleUpdateAnimal = () => {
     const { id } = updateAnimal;
-    axios
-      .put(
-        `${import.meta.env.VITE_APP_BASE_URL}/api/v1/animals/${id}`,
-        updateAnimal
-      )
-      .then(() => setUpdate(false))
-      .then(() =>
-        setUpdateAnimal({
-          id: "",
-          name: "",
-          species: "",
-          breed: "",
-          gender: "",
-          dateOfBirth: "",
-          colour: "",
-          customer: {},
-        })
-      );
+    axios.put(
+      `${import.meta.env.VITE_APP_BASE_URL}/api/v1/animals/${id}`,
+      updateAnimal
+    );
+    setUpdateMessage("Updated successfully!");
+    setUpdate(false);
+    setUpdateAnimal({
+      id: "",
+      name: "",
+      species: "",
+      breed: "",
+      gender: "",
+      dateOfBirth: "",
+      colour: "",
+      customer: {},
+    });
   };
 
   const handleUpdateAnimalInputChange = (e) => {
@@ -125,9 +162,18 @@ function Animal() {
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/animals/${id}`)
       .then(() => setUpdate(false));
+    setDeleteMessage("Deleted successfully!");
   };
 
-  ////////////////////////////////
+  const filteredAnimals = animal?.filter((anim) => {
+    const animalNameMatch = anim.name
+      .toLowerCase()
+      .includes(searchValue.toLowerCase());
+    const customerNameMatch = anim.customer.name
+      .toLowerCase()
+      .includes(customerSearchValue.toLowerCase());
+    return animalNameMatch && customerNameMatch;
+  });
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -143,7 +189,6 @@ function Animal() {
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
-    // hide last border
     "&:last-child td, &:last-child th": {
       border: 0,
     },
@@ -240,6 +285,11 @@ function Animal() {
           </Select>
         </FormControl>
 
+        {successMessage && (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -346,7 +396,11 @@ function Animal() {
             ))}
           </Select>
         </FormControl>
-
+        {updateMessage && (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert severity="success">{updateMessage}</Alert>
+          </Stack>
+        )}
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -359,7 +413,48 @@ function Animal() {
         <br />
         <br />
       </div>
-
+      <br />
+      <Typography
+        style={{
+          color: "white",
+          backgroundColor: "#1aec9c",
+          padding: "10px",
+          fontSize: "20px",
+        }}
+        sx={{ fontWeight: "700" }}
+      >
+        Search By Animal Name
+      </Typography>
+      <br />
+      <TextField
+        sx={{ marginLeft: 5, marginTop: 1 }}
+        variant="outlined"
+        placeholder="Search Animal Name"
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+      <br />
+      <Typography
+        style={{
+          color: "white",
+          backgroundColor: "#1aec9c",
+          padding: "10px",
+          fontSize: "20px",
+        }}
+        sx={{ fontWeight: "700", marginTop: 2 }}
+      >
+        Search by Customer Name
+      </Typography>
+      <br />
+      <TextField
+        sx={{ marginLeft: 5, marginTop: 1 }}
+        variant="outlined"
+        placeholder="Search Customer Name"
+        value={customerSearchValue}
+        onChange={(e) => setCustomerSearchValue(e.target.value)}
+      />
+      <br />
+      <br />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -465,7 +560,7 @@ function Animal() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {animal?.map((anim, index) => (
+            {filteredAnimals?.map((anim, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
                   {anim.name}
@@ -505,24 +600,15 @@ function Animal() {
               </StyledTableRow>
             ))}
           </TableBody>
+          {deleteMessage && (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+              <Alert severity="error">{deleteMessage}</Alert>
+            </Stack>
+          )}
         </Table>
       </TableContainer>
-      {/* <ul>
-        {animal?.map((anim, index) => (
-          <li key={index}>
-            {anim.name} - {anim.species} - {anim.breed} - {anim.gender} -{" "}
-            {anim.dateOfBirth} - {anim.colour} - {anim.customer?.name}
-            <span onClick={handleDeleteAnimal} id={anim.id}>
-              {" "}
-              DELETE{" "}
-            </span>{" "}
-            -{" "}
-            <span id={index} onClick={handleUpdateAnimalBtn}>
-              UPDATE
-            </span>
-          </li>
-        ))}
-      </ul> */}
+
+      <br />
     </Box>
   );
 }
