@@ -16,11 +16,11 @@ http://planned-regine-osmankusoglu-4a5d08f4.koyeb.app
 https://github.com/osmankusoglu/Vet-Application-Backend
 
 # Features
-Customer: Add, update, delete, and list customers.
-Animal: Add, update, delete, and list animals. Animals belonging to each customer can be listed.
-Doctor: Add, update, delete, and list doctors. Available days for each doctor can be listed.
-Appointment: Create appointments for animals and doctors. Appointments can be listed and updated.
-Vaccination: Add vaccination for animals. Vaccinations can be listed and updated.
-Report: Create a report for each appointment.
+# Customer: Add, update, delete, and list customers.
+- Animal: Add, update, delete, and list animals. Animals belonging to each customer can be listed.
+- Doctor: Add, update, delete, and list doctors. Available days for each doctor can be listed.
+- Appointment: Create appointments for animals and doctors. Appointments can be listed and updated.
+- Vaccination: Add vaccination for animals. Vaccinations can be listed and updated.
+- Report: Create a report for each appointment.
 
 
