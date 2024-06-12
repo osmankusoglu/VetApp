@@ -12,12 +12,10 @@ import Report from "./Pages/Report/Report";
 function App() {
   const location = useLocation();
 
-  // Sadece '/' (Home) yolunda Navbar'ı gizle
   const hideNavbar = location.pathname === "/";
 
   return (
     <div>
-      {/* Home sayfası dışındaki diğer sayfalarda Navbar'ı göster */}
       {!hideNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />

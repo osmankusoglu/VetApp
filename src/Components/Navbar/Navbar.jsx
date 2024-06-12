@@ -1,22 +1,18 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
+import { Link } from "react-router-dom";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Typography,
+  Button,
+  Menu,
+  Container,
+} from "@mui/material";
 import PetsIcon from "@mui/icons-material/Pets";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
-
-import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const pagesRouter = [
-  // { route: "customer", title: "Customer" },
-  // { route: "doctor", title: "Doctor" },
-  // { route: "animal", title: "Animal" },
   { route: "appointment", title: "Appointment" },
   { route: "vaccination", title: "Vaccination" },
   { route: "report", title: "Report" },
@@ -28,8 +24,8 @@ const pagesRouters = [
 ];
 
 function Navbar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -121,21 +117,14 @@ function Navbar() {
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Tooltip>
-              <LocalHospitalIcon onClick={handleOpenUserMenu} />
-            </Tooltip>
+            <LocalHospitalIcon onClick={handleOpenUserMenu} />
+
             <Menu
               id="menu-appbar"
               anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
               keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
