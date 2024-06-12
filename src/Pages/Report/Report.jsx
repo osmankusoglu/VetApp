@@ -32,7 +32,9 @@ const initReport = {
 };
 
 function Report() {
+  const [searchValue, setSearchValue] = useState("");
   const [successMessage, setSuccessMessage] = useState(null);
+  const [updateMessage, setUpdateMessage] = useState(null);
   const [deleteMessage, setDeleteMessage] = useState(null);
   const [report, setReport] = useState([]);
   const [appointment, setAppointment] = useState([]);
@@ -57,6 +59,15 @@ function Report() {
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
+
+  useEffect(() => {
+    if (updateMessage) {
+      const timer = setTimeout(() => {
+        setUpdateMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [updateMessage]);
 
   useEffect(() => {
     axios
@@ -100,6 +111,9 @@ function Report() {
         setUpdate((prevUpdate) => !prevUpdate);
         setNewReport({ ...initReport });
         setSuccessMessage("Report added successfully!");
+      })
+      .catch((error) => {
+        console.error("Error adding report:", error);
       });
   };
 
@@ -111,8 +125,8 @@ function Report() {
       )
       .then(() => {
         setUpdate((prevUpdate) => !prevUpdate);
-        setSuccessMessage("Report updated successfully!");
-        setUpdateReport({ ...initReport }); // Reset updateReport state
+        setUpdateReport({ ...initReport });
+        setUpdateMessage("Report updated successfully!");
       })
       .catch((error) => {
         console.error("Error updating report:", error);
@@ -147,6 +161,10 @@ function Report() {
       appointmentId: rep.appointment.id,
     });
   };
+
+  const filteredReport = report?.filter((rep) =>
+    rep.title.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -329,6 +347,33 @@ function Report() {
           Update Report
         </Button>
       </Box>
+      {updateMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="success">{updateMessage}</Alert>
+        </Stack>
+      )}
+      <br />
+      <Typography
+        style={{
+          color: "white",
+          backgroundColor: "#1aec9c",
+          padding: "10px",
+          fontSize: "20px",
+        }}
+        sx={{ fontWeight: "700" }}
+      >
+        Search Report
+      </Typography>
+      <br />
+      <TextField
+        sx={{ marginLeft: 5, marginTop: 1 }}
+        variant="outlined"
+        placeholder="Search Report"
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+      <br />
+      <br />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -425,7 +470,7 @@ function Report() {
           </TableHead>
 
           <TableBody>
-            {report?.map((rep, index) => (
+            {filteredReport?.map((rep, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row" align="center">
                   {rep.title}
