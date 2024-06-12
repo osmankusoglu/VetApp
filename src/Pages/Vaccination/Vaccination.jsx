@@ -47,7 +47,7 @@ function Vaccination() {
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [update, setUpdate] = useState(false);
+  // const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     axios

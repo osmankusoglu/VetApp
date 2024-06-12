@@ -5,7 +5,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
@@ -15,15 +14,18 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import { Link } from "react-router-dom";
 
 const pagesRouter = [
-  { route: "customer", title: "Customer" },
-  { route: "doctor", title: "Doctor" },
-  { route: "animal", title: "Animal" },
+  // { route: "customer", title: "Customer" },
+  // { route: "doctor", title: "Doctor" },
+  // { route: "animal", title: "Animal" },
   { route: "appointment", title: "Appointment" },
   { route: "vaccination", title: "Vaccination" },
   { route: "report", title: "Report" },
 ];
-
-const settings = ["Customer", "Doctor", "Animal"];
+const pagesRouters = [
+  { route: "customer", title: "Customer" },
+  { route: "doctor", title: "Doctor" },
+  { route: "animal", title: "Animal" },
+];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -51,7 +53,13 @@ function Navbar() {
         <Toolbar disableGutters>
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
             <Box sx={{ mr: 2, display: "flex", alignItems: "center" }}>
-              <PetsIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+              <PetsIcon
+                sx={{
+                  display: { xs: "none", md: "flex" },
+                  mr: 1,
+                  fontSize: "2.0rem",
+                }}
+              />
               <Typography
                 variant="h6"
                 noWrap
@@ -64,9 +72,10 @@ function Navbar() {
                   letterSpacing: ".3rem",
                   color: "inherit",
                   textDecoration: "none",
+                  fontSize: "1.5rem",
                 }}
               >
-                Vet
+                VET
               </Typography>
             </Box>
           </Link>
@@ -86,7 +95,7 @@ function Navbar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            VET
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
@@ -96,16 +105,24 @@ function Navbar() {
                 component={Link}
                 to={page.route}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", textDecoration: "none" }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  textDecoration: "none",
+                  fontFamily: "monospace",
+                  fontWeight: 700,
+                  letterSpacing: ".2rem",
+                  fontSize: "1.1rem",
+                }}
               >
                 {page.title}
               </Button>
             ))}
           </Box>
 
-          <Box>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Tooltip title="User Menu">
-              <LocalHospitalIcon />
+              <LocalHospitalIcon onClick={handleOpenUserMenu} />
             </Tooltip>
             <Menu
               id="menu-appbar"
@@ -122,10 +139,24 @@ function Navbar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting, index) => (
-                <MenuItem key={index} onClick={handleCloseUserMenu}>
-                  {setting}
-                </MenuItem>
+              {pagesRouters.map((page, index) => (
+                <Button
+                  key={index}
+                  component={Link}
+                  to={page.route}
+                  onClick={handleCloseUserMenu}
+                  sx={{
+                    mr: 2,
+                    display: { xs: "none", md: "flex" },
+                    fontFamily: "monospace",
+                    fontWeight: 700,
+                    letterSpacing: ".3rem",
+                    color: "inherit",
+                    textDecoration: "none",
+                  }}
+                >
+                  {page.title}
+                </Button>
               ))}
             </Menu>
           </Box>
