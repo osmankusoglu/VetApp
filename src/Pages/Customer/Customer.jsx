@@ -134,9 +134,11 @@ function Customer() {
     }));
   };
 
-  const handleUpdateCustomerBtn = (e) => {
-    const index = e.target.id;
-    setUpdateCustomer({ ...customer[index] });
+  const handleUpdateCustomerBtn = (id) => {
+    const selectedCustomer = customer.find((cust) => cust.id === id);
+    if (selectedCustomer) {
+      setUpdateCustomer(selectedCustomer);
+    }
   };
 
   const handleDeleteCustomer = (e) => {
@@ -147,12 +149,9 @@ function Customer() {
     setDeleteMessage("Deleted successfully!");
   };
 
-  // Müşterileri filtrelemek için bir fonksiyon
   const filteredCustomers = customer?.filter((cust) =>
     cust.name.toLowerCase().includes(searchValue.toLowerCase())
   );
-
-  /////////////////////////////////
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -168,7 +167,6 @@ function Customer() {
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
-    // hide last border
     "&:last-child td, &:last-child th": {
       border: 0,
     },
@@ -442,8 +440,7 @@ function Customer() {
                     style={{ backgroundColor: "#f39c12", color: "white" }}
                     variant="contained"
                     endIcon={<SendIcon />}
-                    onClick={handleUpdateCustomerBtn}
-                    id={index}
+                    onClick={() => handleUpdateCustomerBtn(cust.id)} // ID'yi buradan geçiyoruz
                   >
                     UPDATE
                   </Button>
@@ -489,6 +486,8 @@ function Customer() {
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
       />
+      <br />
+      <br />
     </Box>
   );
 }

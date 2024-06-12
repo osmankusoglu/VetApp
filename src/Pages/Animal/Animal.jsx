@@ -152,9 +152,9 @@ function Animal() {
     }));
   };
 
-  const handleUpdateAnimalBtn = (e) => {
-    const index = e.target.id;
-    setUpdateAnimal({ ...animal[index] });
+  const handleUpdateAnimalBtn = (id) => {
+    const selectedAnimal = animal.find((a) => a.id === id);
+    setUpdateAnimal({ ...selectedAnimal });
   };
 
   const handleDeleteAnimal = (e) => {
@@ -250,12 +250,15 @@ function Animal() {
 
         <TextField
           sx={{ marginLeft: 4, marginTop: 1 }}
+          type="date"
           label="Date of Birth"
-          placeholder="YYYY-MM-DD"
           variant="standard"
           name="dateOfBirth"
           value={newAnimal.dateOfBirth}
           onChange={handleNewAnimalInputChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
         />
 
         <TextField
@@ -267,19 +270,20 @@ function Animal() {
           onChange={handleNewAnimalInputChange}
         />
 
-        <FormControl sx={{ minWidth: 223, marginLeft: 4, height: 20 }}>
-          <InputLabel id="demo-simple-select-helper-label">
-            Select Customer
-          </InputLabel>
+        <FormControl
+          variant="standard"
+          sx={{ marginLeft: 4, marginTop: 1, minWidth: 200 }}
+        >
+          <InputLabel id="customer-label">Customer</InputLabel>
           <Select
-            labelId="Customer"
-            id="SelectCustomer select-label"
-            value={newAnimal.customer?.id || ""}
-            label="Müşteri Seçiniz"
+            labelId="customer-label"
+            value={newAnimal.customer.id || ""}
             onChange={handleCustomerSelectChange}
+            label="Customer"
+            name="customer"
           >
-            {customer?.map((cus, index) => (
-              <MenuItem key={index} value={cus.id}>
+            {customer.map((cus) => (
+              <MenuItem key={cus.id} value={cus.id}>
                 {cus.name}
               </MenuItem>
             ))}
@@ -287,309 +291,197 @@ function Animal() {
         </FormControl>
 
         <Button
-          sx={{ marginLeft: 4, height: 54, width: 223 }}
+          sx={{ marginLeft: 4, marginTop: 1, height: "40px" }}
           variant="contained"
           color="success"
           onClick={handleAddNewAnimal}
         >
-          Add Animal
+          ADD
         </Button>
       </div>
 
       {successMessage && (
-        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+        <Stack sx={{ width: "100%" }} spacing={2}>
           <Alert severity="success">{successMessage}</Alert>
         </Stack>
       )}
-      <div>
-        <br />
-        <Typography
-          variant="h4"
-          style={{
-            color: "white",
-            backgroundColor: "#1abc9c",
-            padding: "10px",
-            borderRadius: "4px",
-            fontSize: "30px",
+
+      <br />
+      <br />
+      <Typography
+        variant="h4"
+        style={{
+          color: "white",
+          backgroundColor: "#1abc9c",
+          padding: "10px",
+          borderRadius: "4px",
+          fontSize: "30px",
+        }}
+      >
+        Update Animal
+      </Typography>
+
+      <br />
+      <TextField
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        label="Animal Name"
+        variant="standard"
+        name="name"
+        value={updateAnimal.name}
+        onChange={handleUpdateAnimalInputChange}
+      />
+
+      <TextField
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        label="Species"
+        variant="standard"
+        name="species"
+        value={updateAnimal.species}
+        onChange={handleUpdateAnimalInputChange}
+      />
+
+      <TextField
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        label="Breed"
+        variant="standard"
+        name="breed"
+        value={updateAnimal.breed}
+        onChange={handleUpdateAnimalInputChange}
+      />
+
+      <TextField
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        label="Gender"
+        variant="standard"
+        name="gender"
+        value={updateAnimal.gender}
+        onChange={handleUpdateAnimalInputChange}
+      />
+
+      <TextField
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        type="date"
+        label="Date of Birth"
+        variant="standard"
+        name="dateOfBirth"
+        value={updateAnimal.dateOfBirth}
+        onChange={handleUpdateAnimalInputChange}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+
+      <TextField
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        label="Colour"
+        variant="standard"
+        name="colour"
+        value={updateAnimal.colour}
+        onChange={handleUpdateAnimalInputChange}
+      />
+
+      <FormControl
+        variant="standard"
+        sx={{ marginLeft: 4, marginTop: 1, minWidth: 200 }}
+      >
+        <InputLabel id="customer-label">Customer</InputLabel>
+        <Select
+          labelId="customer-label"
+          value={updateAnimal.customer.id || ""}
+          onChange={(e) => {
+            const id = e.target.value;
+            const newCustomer = customer.find((cus) => cus.id === +id);
+            setUpdateAnimal((prev) => ({
+              ...prev,
+              customer: newCustomer,
+            }));
           }}
+          label="Customer"
+          name="customer"
         >
-          Update Animal
-        </Typography>
-        <br />
-        <br />
-        <TextField
-          sx={{ marginLeft: 4, marginTop: 1 }}
-          label="Animal Name"
-          variant="standard"
-          name="name"
-          value={updateAnimal.name}
-          onChange={handleUpdateAnimalInputChange}
-        />
+          {customer.map((cus) => (
+            <MenuItem key={cus.id} value={cus.id}>
+              {cus.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-        <TextField
-          sx={{ marginLeft: 4, marginTop: 1 }}
-          label="Species"
-          variant="standard"
-          name="species"
-          value={updateAnimal.species}
-          onChange={handleUpdateAnimalInputChange}
-        />
-
-        <TextField
-          sx={{ marginLeft: 4, marginTop: 1 }}
-          label="Breed"
-          variant="standard"
-          name="breed"
-          value={updateAnimal.breed}
-          onChange={handleUpdateAnimalInputChange}
-        />
-
-        <TextField
-          sx={{ marginLeft: 4, marginTop: 1 }}
-          label="Gender"
-          variant="standard"
-          name="gender"
-          value={updateAnimal.gender}
-          onChange={handleUpdateAnimalInputChange}
-        />
-
-        <TextField
-          sx={{ marginLeft: 4, marginTop: 1 }}
-          label="Date of Birth"
-          placeholder="YYYY-MM-DD"
-          variant="standard"
-          name="dateOfBirth"
-          value={updateAnimal.dateOfBirth}
-          onChange={handleUpdateAnimalInputChange}
-        />
-
-        <TextField
-          sx={{ marginLeft: 4, marginTop: 1 }}
-          label="Colour"
-          variant="standard"
-          name="colour"
-          value={updateAnimal.colour}
-          onChange={handleUpdateAnimalInputChange}
-        />
-
-        <FormControl sx={{ minWidth: 223, marginLeft: 4, height: 20 }}>
-          <InputLabel id="demo-simple-select-helper-label">
-            Select Customer
-          </InputLabel>
-          <Select
-            labelId="Customer"
-            id="SelectCustomer select-label"
-            value={updateAnimal.customer?.id || ""}
-            label="Select Customer"
-            onChange={(e) => {
-              const id = e.target.value;
-              const selectedCustomer = customer.find((cus) => cus.id === +id);
-              setUpdateAnimal((prev) => ({
-                ...prev,
-                customer: selectedCustomer,
-              }));
-            }}
-          >
-            {customer?.map((cus, index) => (
-              <MenuItem key={index} value={cus.id}>
-                {cus.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <Button
-          sx={{ marginLeft: 4, height: 54, width: 223 }}
-          variant="contained"
-          color="success"
-          onClick={handleUpdateAnimal}
-        >
-          Update Animal
-        </Button>
-      </div>
+      <Button
+        sx={{ marginLeft: 4, marginTop: 1, height: "40px" }}
+        variant="contained"
+        color="success"
+        onClick={handleUpdateAnimal}
+      >
+        UPDATE
+      </Button>
 
       {updateMessage && (
-        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+        <Stack sx={{ width: "100%" }} spacing={2}>
           <Alert severity="success">{updateMessage}</Alert>
         </Stack>
       )}
+
       <br />
-      <Typography
-        style={{
-          color: "white",
-          backgroundColor: "#1aec9c",
-          padding: "10px",
-          fontSize: "20px",
-        }}
-        sx={{ fontWeight: "700" }}
-      >
-        Search By Animal Name
-      </Typography>
       <br />
       <TextField
-        sx={{ marginLeft: 5, marginTop: 1 }}
-        variant="outlined"
-        placeholder="Search Animal Name"
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        label="Search Animal Name"
+        variant="standard"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
       />
-      <br />
-      <Typography
-        style={{
-          color: "white",
-          backgroundColor: "#1aec9c",
-          padding: "10px",
-          fontSize: "20px",
-        }}
-        sx={{ fontWeight: "700", marginTop: 2 }}
-      >
-        Search by Customer Name
-      </Typography>
-      <br />
+
       <TextField
-        sx={{ marginLeft: 5, marginTop: 1 }}
-        variant="outlined"
-        placeholder="Search Customer Name"
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        label="Search Customer Name"
+        variant="standard"
         value={customerSearchValue}
         onChange={(e) => setCustomerSearchValue(e.target.value)}
       />
+
       <br />
       <br />
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell
-                style={{
-                  color: "white",
-                  backgroundColor: "#1abc9c",
-                  padding: "10px",
-                  fontSize: "20px",
-                }}
-              >
-                Animal Name
-              </StyledTableCell>
-              <StyledTableCell
-                style={{
-                  color: "white",
-                  backgroundColor: "#1abc9c",
-                  padding: "10px",
-                  fontSize: "20px",
-                }}
-                align="left"
-              >
-                Animal Species
-              </StyledTableCell>
-              <StyledTableCell
-                style={{
-                  color: "white",
-                  backgroundColor: "#1abc9c",
-                  padding: "10px",
-                  fontSize: "20px",
-                }}
-                align="left"
-              >
-                Animal Breed
-              </StyledTableCell>
-              <StyledTableCell
-                style={{
-                  color: "white",
-                  backgroundColor: "#1abc9c",
-                  padding: "10px",
-                  fontSize: "20px",
-                }}
-                align="left"
-              >
-                Animal Gender
-              </StyledTableCell>
-              <StyledTableCell
-                style={{
-                  color: "white",
-                  backgroundColor: "#1abc9c",
-                  padding: "10px",
-                  fontSize: "20px",
-                }}
-                align="left"
-              >
-                Animal Colour
-              </StyledTableCell>
-              <StyledTableCell
-                style={{
-                  color: "white",
-                  backgroundColor: "#1abc9c",
-                  padding: "10px",
-                  fontSize: "20px",
-                }}
-                align="left"
-              >
-                Animal Date of Birth
-              </StyledTableCell>
-              <StyledTableCell
-                style={{
-                  color: "white",
-                  backgroundColor: "#1abc9c",
-                  padding: "10px",
-                  fontSize: "20px",
-                }}
-                align="left"
-              >
-                Animal Customer
-              </StyledTableCell>
-              <StyledTableCell
-                style={{
-                  color: "white",
-                  backgroundColor: "#1abc9c",
-                  padding: "10px",
-                  fontSize: "20px",
-                }}
-                align="left"
-              >
-                Animal Update
-              </StyledTableCell>
-              <StyledTableCell
-                style={{
-                  color: "white",
-                  backgroundColor: "#1abc9c",
-                  padding: "10px",
-                  fontSize: "20px",
-                }}
-                align="left"
-              >
-                Animal Delete
-              </StyledTableCell>
+              <StyledTableCell>Animal Name</StyledTableCell>
+              <StyledTableCell>Species</StyledTableCell>
+              <StyledTableCell>Breed</StyledTableCell>
+              <StyledTableCell>Gender</StyledTableCell>
+              <StyledTableCell>Date of Birth</StyledTableCell>
+              <StyledTableCell>Colour</StyledTableCell>
+              <StyledTableCell>Customer Name</StyledTableCell>
+              <StyledTableCell>Actions</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredAnimals?.map((anim, index) => (
-              <StyledTableRow key={index}>
+            {filteredAnimals?.map((anim) => (
+              <StyledTableRow key={anim.id}>
                 <StyledTableCell component="th" scope="row">
                   {anim.name}
                 </StyledTableCell>
-                <StyledTableCell align="left">{anim.species}</StyledTableCell>
-                <StyledTableCell align="left">{anim.breed}</StyledTableCell>
-                <StyledTableCell align="left">{anim.gender}</StyledTableCell>
-                <StyledTableCell align="left">{anim.colour}</StyledTableCell>
-                <StyledTableCell align="left">
-                  {anim.dateOfBirth}
-                </StyledTableCell>
-                <StyledTableCell align="left">
-                  {anim.customer.name}
-                </StyledTableCell>
-                <StyledTableCell align="left">
+                <StyledTableCell>{anim.species}</StyledTableCell>
+                <StyledTableCell>{anim.breed}</StyledTableCell>
+                <StyledTableCell>{anim.gender}</StyledTableCell>
+                <StyledTableCell>{anim.dateOfBirth}</StyledTableCell>
+                <StyledTableCell>{anim.colour}</StyledTableCell>
+                <StyledTableCell>{anim.customer.name}</StyledTableCell>
+                <StyledTableCell>
                   <Button
                     style={{ backgroundColor: "#f39c12", color: "white" }}
                     variant="contained"
                     endIcon={<SendIcon />}
-                    onClick={handleUpdateAnimalBtn}
-                    id={index}
+                    onClick={() => handleUpdateAnimalBtn(anim.id)}
+                    id={anim.id} // id'yi doğrudan aktarıyoruz
                   >
                     UPDATE
                   </Button>
-                </StyledTableCell>
-                <StyledTableCell align="left">
                   <Button
                     style={{ backgroundColor: "#e74c3c", color: "white" }}
-                    variant="outlined"
+                    variant="contained"
                     startIcon={<DeleteIcon />}
                     onClick={handleDeleteAnimal}
                     id={anim.id}
@@ -603,12 +495,10 @@ function Animal() {
         </Table>
       </TableContainer>
       {deleteMessage && (
-        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
-          <Alert severity="error">{deleteMessage}</Alert>
+        <Stack sx={{ width: "100%" }} spacing={2}>
+          <Alert severity="success">{deleteMessage}</Alert>
         </Stack>
       )}
-
-      <br />
     </Box>
   );
 }
