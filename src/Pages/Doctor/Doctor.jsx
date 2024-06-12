@@ -90,7 +90,7 @@ function Doctor() {
       .post(import.meta.env.VITE_APP_BASE_URL + "/api/v1/doctors", newDoctor)
       .then((res) => {
         console.log(res);
-        setSuccessMessage("Added successfully!");
+        setSuccessMessage("Doctor added successfully!");
         setUpdate(false);
         setNewDoctor({
           name: "",
@@ -120,7 +120,7 @@ function Doctor() {
           address: "",
           city: "",
         });
-        setUpdateMessage("Updated successfully!");
+        setUpdateMessage("Doctor updated successfully!");
       });
   };
 
@@ -142,7 +142,7 @@ function Doctor() {
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/doctors/${id}`)
       .then(() => setUpdate(false));
-    setDeleteMessage("Deleted successfully!");
+    setDeleteMessage("Doctor deleted successfully!");
   };
 
   /////////////////////////////////
@@ -246,7 +246,10 @@ function Doctor() {
           Add Doctor
         </Button>
         {successMessage && (
-          <Stack sx={{ width: "100%" }} spacing={2}>
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
             <Alert severity="success">{successMessage}</Alert>
           </Stack>
         )}
@@ -317,11 +320,7 @@ function Doctor() {
             value={updateDoctor.city}
             onChange={handleUpdateDoctorInputChange}
           />
-          {updateMessage && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="success">{updateMessage}</Alert>
-            </Stack>
-          )}
+
           <Button
             sx={{ marginLeft: 13, width: 200, height: 40 }}
             variant="contained"
@@ -330,6 +329,14 @@ function Doctor() {
           >
             Update Doctor
           </Button>
+          {updateMessage && (
+            <Stack
+              sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+              spacing={2}
+            >
+              <Alert severity="success">{updateMessage}</Alert>
+            </Stack>
+          )}
         </div>
         <br />
         <br />
@@ -455,13 +462,13 @@ function Doctor() {
               </StyledTableRow>
             ))}
           </TableBody>
-          {deleteMessage && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="error">{deleteMessage}</Alert>
-            </Stack>
-          )}
         </Table>
       </TableContainer>
+      {deleteMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 20, marginTop: 5 }} spacing={2}>
+          <Alert severity="error">{deleteMessage}</Alert>
+        </Stack>
+      )}
       <br />
 
       {/* <ul>

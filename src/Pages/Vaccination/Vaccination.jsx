@@ -40,12 +40,14 @@ function Vaccination() {
 
   const [successMessage, setSuccessMessage] = useState(null);
   const [deleteMessage, setDeleteMessage] = useState(null);
+  const [filterMessage, setFilterMessage] = useState(null);
   const [vaccinations, setVaccinations] = useState([]);
   const [animals, setAnimals] = useState([]);
   const [newVaccination, setNewVaccination] = useState({ ...initState });
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     axios
@@ -68,7 +70,6 @@ function Vaccination() {
           }/api/v1/vaccinations/searchByVaccinationRange?startDate=${startDate}&endDate=${endDate}`
         )
         .then((res) => {
-          console.log("API response:", res.data); // Burada API cevabını logla
           setVaccinations(res.data.content);
         });
     }
@@ -92,6 +93,15 @@ function Vaccination() {
     }
   }, [successMessage]);
 
+  useEffect(() => {
+    if (filterMessage) {
+      const timer = setTimeout(() => {
+        setFilterMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [filterMessage]);
+
   const handleNewVaccinationInputChange = (e) => {
     const { name, value } = e.target;
     setNewVaccination((prev) => ({
@@ -112,13 +122,16 @@ function Vaccination() {
   const handleAddNewVaccination = () => {
     axios
       .post(
-        import.meta.env.VITE_APP_BASE_URL + "/api/v1/vaccinations",
+        `${import.meta.env.VITE_APP_BASE_URL}/api/v1/vaccinations`,
         newVaccination
       )
-      .then(() => {
-        setSuccessMessage("Added successfully!");
+      .then((response) => {
+        setSuccessMessage("New vaccination added successfully!");
+        setVaccinations((prevVaccinations) => [
+          ...prevVaccinations,
+          response.data,
+        ]); // Yeni aşıyı listeye ekleyin
         setNewVaccination({ ...initState });
-        window.location.reload();
       });
   };
 
@@ -127,7 +140,7 @@ function Vaccination() {
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/vaccinations/${id}`)
       .then(() => {
         setVaccinations(vaccinations.filter((vac) => vac.id !== id));
-        setDeleteMessage("Deleted successfully!");
+        setDeleteMessage("Vaccination deleted successfully!");
       });
   };
 
@@ -156,10 +169,10 @@ function Vaccination() {
     setSearchTerm("");
     setStartDate("");
     setEndDate("");
+    setFilterMessage("Vaccination list reset!");
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/vaccinations")
-      .then((res) => setVaccinations(res.data.content))
-      .catch((error) => console.error("API error:", error));
+      .then((res) => setVaccinations(res.data.content));
   };
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -257,11 +270,7 @@ function Vaccination() {
             ))}
           </Select>
         </FormControl>
-        {successMessage && (
-          <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="success">{successMessage}</Alert>
-          </Stack>
-        )}
+
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -270,6 +279,14 @@ function Vaccination() {
         >
           Add Vaccination
         </Button>
+        {successMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
       </div>
       <br />
 
@@ -366,10 +383,11 @@ function Vaccination() {
       </TableContainer>
       <br />
       {deleteMessage && (
-        <Stack sx={{ width: "100%" }} spacing={2}>
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
           <Alert severity="error">{deleteMessage}</Alert>
         </Stack>
       )}
+      <br />
       <TableContainer>
         <Table>
           <TableHead>
@@ -468,6 +486,16 @@ function Vaccination() {
             </StyledTableCell>
           </TableBody>
         </Table>
+        <br />
+        {filterMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="success">{filterMessage}</Alert>
+          </Stack>
+        )}
+        <br />
       </TableContainer>
     </Box>
   );

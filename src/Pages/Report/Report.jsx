@@ -20,11 +20,11 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
 const initReport = {
+  id: null,
   title: "",
   diagnosis: "",
   price: 0,
@@ -38,6 +38,7 @@ function Report() {
   const [appointment, setAppointment] = useState([]);
   const [newReport, setNewReport] = useState({ ...initReport });
   const [update, setUpdate] = useState(false);
+  const [updateReport, setUpdateReport] = useState({ ...initReport });
 
   useEffect(() => {
     if (deleteMessage) {
@@ -78,35 +79,41 @@ function Report() {
       (app) => app.id === newReport.appointmentId
     );
 
-    if (selectedAppointment) {
-      const updatedReport = {
-        ...newReport,
-        customerName: selectedAppointment.customerName,
-        doctorName: selectedAppointment.doctorName,
-        animalName: selectedAppointment.animalName,
-      };
-
-      axios
-        .post(
-          import.meta.env.VITE_APP_BASE_URL + "/api/v1/reports",
-          updatedReport
-        )
-        .then(() => {
-          setUpdate((prevUpdate) => !prevUpdate);
-          setNewReport({ ...initReport });
-          setSuccessMessage("Added successfully!");
-        });
+    if (!selectedAppointment) {
+      setDeleteMessage("Invalid appointment selected");
+      return;
     }
+
+    const updatedReport = {
+      ...newReport,
+      customerName: selectedAppointment.customerName,
+      doctorName: selectedAppointment.doctorName,
+      animalName: selectedAppointment.animalName,
+    };
+
+    axios
+      .post(
+        import.meta.env.VITE_APP_BASE_URL + "/api/v1/reports",
+        updatedReport
+      )
+      .then(() => {
+        setUpdate((prevUpdate) => !prevUpdate);
+        setNewReport({ ...initReport });
+        setSuccessMessage("Report added successfully!");
+      });
   };
 
-  const handleUpdateReport = (id) => {
+  const handleUpdateReport = (id, updatedReport) => {
     axios
       .put(
         `${import.meta.env.VITE_APP_BASE_URL}/api/v1/reports/${id}`,
-        newReport
+        updatedReport
       )
-      .then(() => setUpdate((prevUpdate) => !prevUpdate))
-      .then(() => setNewReport({ ...initReport }))
+      .then(() => {
+        setUpdate((prevUpdate) => !prevUpdate);
+        setSuccessMessage("Report updated successfully!");
+        setUpdateReport({ ...initReport }); // Reset updateReport state
+      })
       .catch((error) => {
         console.error("Error updating report:", error);
       });
@@ -116,7 +123,29 @@ function Report() {
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/reports/${id}`)
       .then(() => setUpdate((prevUpdate) => !prevUpdate));
-    setDeleteMessage("Deleted successfully!");
+    setDeleteMessage("Report deleted successfully!");
+  };
+
+  const handleAppointmentSelectChange = (e) => {
+    const id = e.target.value;
+    setNewReport((prevReport) => ({
+      ...prevReport,
+      appointmentId: id,
+    }));
+    setUpdateReport((prevReport) => ({
+      ...prevReport,
+      appointmentId: id,
+    }));
+  };
+
+  const handleEditReport = (rep) => {
+    setUpdateReport({
+      id: rep.id,
+      title: rep.title,
+      diagnosis: rep.diagnosis,
+      price: rep.price,
+      appointmentId: rep.appointment.id,
+    });
   };
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -138,18 +167,9 @@ function Report() {
     },
   }));
 
-  const handleAppointmentSelectChange = (e) => {
-    const id = e.target.value;
-    setNewReport((prevReport) => ({
-      ...prevReport,
-      appointmentId: id,
-    }));
-  };
-
   return (
     <div>
       <Typography
-        align="center"
         variant="h4"
         style={{
           color: "white",
@@ -159,7 +179,7 @@ function Report() {
           fontSize: "30px",
         }}
       >
-        Report Management
+        Add Report
       </Typography>
       <Box
         sx={{
@@ -200,7 +220,7 @@ function Report() {
           <InputLabel id="appointment-id-label">Appointment ID</InputLabel>
           <Select
             labelId="Appointment-id"
-            id="SelectAppointmentId select-label"
+            id="SelectAppointmentId"
             label="Select Appointment ID"
             value={newReport.appointmentId}
             onChange={handleAppointmentSelectChange}
@@ -212,17 +232,101 @@ function Report() {
             ))}
           </Select>
         </FormControl>
-        {successMessage && (
-          <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="success">{successMessage}</Alert>
-          </Stack>
-        )}
+
         <Button
           variant="contained"
           color="success"
           onClick={handleAddNewReport}
         >
           Add Report
+        </Button>
+      </Box>
+      {successMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="success">{successMessage}</Alert>
+        </Stack>
+      )}
+      <br />
+      <Typography
+        variant="h4"
+        style={{
+          color: "white",
+          backgroundColor: "#1abc9c",
+          padding: "10px",
+          borderRadius: "4px",
+          fontSize: "30px",
+        }}
+      >
+        Update Report
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-around",
+          margin: "20px 0",
+        }}
+      >
+        <FormControl sx={{ minWidth: 200 }}>
+          <TextField
+            label="Title"
+            value={updateReport.title}
+            onChange={(e) =>
+              setUpdateReport({ ...updateReport, title: e.target.value })
+            }
+          />
+        </FormControl>
+        <FormControl sx={{ minWidth: 200 }}>
+          <TextField
+            label="Diagnosis"
+            value={updateReport.diagnosis}
+            onChange={(e) =>
+              setUpdateReport({ ...updateReport, diagnosis: e.target.value })
+            }
+          />
+        </FormControl>
+        <FormControl sx={{ minWidth: 120 }}>
+          <TextField
+            label="Price"
+            type="number"
+            value={updateReport.price}
+            onChange={(e) =>
+              setUpdateReport({
+                ...updateReport,
+                price: parseFloat(e.target.value),
+              })
+            }
+          />
+        </FormControl>
+        <FormControl sx={{ minWidth: 200 }}>
+          <InputLabel id="appointment-id-label">Appointment ID</InputLabel>
+          <Select
+            labelId="Appointment-id"
+            id="SelectAppointmentId"
+            label="Select Appointment ID"
+            value={updateReport.appointmentId}
+            onChange={handleAppointmentSelectChange}
+          >
+            {appointment.map((appo) => (
+              <MenuItem key={appo.id} value={appo.id}>
+                {new Date(appo.appointmentDate).toLocaleDateString()}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() =>
+            handleUpdateReport(updateReport.id, {
+              title: updateReport.title,
+              diagnosis: updateReport.diagnosis,
+              price: updateReport.price,
+              appointmentId: updateReport.appointmentId,
+            })
+          }
+        >
+          Update Report
         </Button>
       </Box>
       <TableContainer component={Paper}>
@@ -319,6 +423,7 @@ function Report() {
               </StyledTableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {report?.map((rep, index) => (
               <StyledTableRow key={index}>
@@ -330,20 +435,20 @@ function Report() {
                 </StyledTableCell>
                 <StyledTableCell align="center">{rep.price}</StyledTableCell>
                 <StyledTableCell align="center">
-                  {rep.customerName}
+                  {rep.appointment.customerName}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {rep.animalName}
+                  {rep.appointment.animalName}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {rep.doctorName}
+                  {rep.appointment.doctorName}
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Button
                     style={{ backgroundColor: "#f39c12", color: "white" }}
                     variant="contained"
                     endIcon={<SendIcon />}
-                    onClick={() => handleUpdateReport(rep.id)}
+                    onClick={() => handleEditReport(rep)}
                   >
                     UPDATE
                   </Button>
@@ -361,13 +466,13 @@ function Report() {
               </StyledTableRow>
             ))}
           </TableBody>
-          {deleteMessage && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="error">{deleteMessage}</Alert>
-            </Stack>
-          )}
         </Table>
       </TableContainer>
+      {deleteMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="error">{deleteMessage}</Alert>
+        </Stack>
+      )}
     </div>
   );
 }

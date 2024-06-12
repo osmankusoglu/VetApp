@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-// import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 
 import InputLabel from "@mui/material/InputLabel";
@@ -33,6 +32,7 @@ dayjs.extend(utc);
 
 function AvailableDate() {
   const initState = {
+    workDay: null,
     workDate: null,
     doctorId: "",
   };
@@ -79,7 +79,6 @@ function AvailableDate() {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/doctors")
       .then((res) => {
-        console.log("Doctors:", res.data.content);
         setDoctor(res.data.content);
       })
       .then(() => setUpdate(true));
@@ -93,7 +92,7 @@ function AvailableDate() {
       })
       .then((res) => {
         console.log(res);
-        setSuccessMessage("Added successfully!");
+        setSuccessMessage("Doctor's available day added successfully!");
         setUpdate(false);
         setNewDate({ ...initState });
       });
@@ -105,7 +104,7 @@ function AvailableDate() {
         `${import.meta.env.VITE_APP_BASE_URL}/api/v1/available-dates/${id}`
       )
       .then(() => setUpdate(false));
-    setDeleteMessage("Deleted successfully!");
+    setDeleteMessage("Doctor's available day deleted successfully!");
   };
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -145,8 +144,9 @@ function AvailableDate() {
           Add Available Date
         </Typography>
         <br />
+        <br />
         <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-          <FormControl sx={{ minWidth: 260 }}>
+          <FormControl sx={{ minWidth: 260, marginTop: 1 }}>
             <InputLabel id="demo-simple-select-helper-label">
               Select Doctor
             </InputLabel>
@@ -167,18 +167,18 @@ function AvailableDate() {
             </Select>
           </FormControl>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer sx={{ paddingTop: 0 }} components={["DatePicker"]}>
+            <DemoContainer components={["DatePicker"]}>
               <DatePicker
                 format="YYYY-MM-DD"
                 disablePast
                 views={["year", "month", "day"]}
                 sx={{ width: 260 }}
                 label="Select Date"
-                value={newDate.workDate}
+                value={newDate.workDay ? dayjs(newDate.workDay) : null}
                 onChange={(date) =>
                   setNewDate({
                     ...newDate,
-                    workDay: dayjs(date).format("YYYY-MM-DD"),
+                    workDay: date ? dayjs(date).format("YYYY-MM-DD") : null,
                   })
                 }
                 renderInput={(params) => <TextField {...params} />}
@@ -187,6 +187,7 @@ function AvailableDate() {
           </LocalizationProvider>
           <br />
           <Button
+            sx={{ height: 50, marginTop: 1 }}
             variant="contained"
             color="success"
             onClick={handleAddNewDate}
@@ -195,7 +196,10 @@ function AvailableDate() {
           </Button>
         </Box>
         {successMessage && (
-          <Stack sx={{ width: "100%" }} spacing={2}>
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
             <Alert severity="success">{successMessage}</Alert>
           </Stack>
         )}
@@ -266,12 +270,17 @@ function AvailableDate() {
               </StyledTableRow>
             ))}
           </TableBody>
-          {deleteMessage && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="error">{deleteMessage}</Alert>
-            </Stack>
-          )}
         </Table>
+        {deleteMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="error">{deleteMessage}</Alert>
+          </Stack>
+        )}
+        <br />
+        <br />
       </TableContainer>
     </div>
   );

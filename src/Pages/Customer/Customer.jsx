@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./Customer.css";
-
 import TextField from "@mui/material/TextField";
 import { Button, Typography } from "@mui/material";
-
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -95,7 +93,7 @@ function Customer() {
       )
       .then((res) => {
         console.log(res);
-        setSuccessMessage("Added successfully!");
+        setSuccessMessage("Customer added successfully!");
         setUpdate(false);
         setNewCustomer({
           name: "",
@@ -115,7 +113,7 @@ function Customer() {
         updateCustomer
       )
       .then(() => {
-        setUpdateMessage("Updated successfully!");
+        setUpdateMessage("Customer updated successfully!");
         setUpdate(false);
         setUpdateCustomer({
           id: "",
@@ -243,12 +241,6 @@ function Customer() {
           value={newCustomer.city}
           onChange={handleNewCustomerInputChange}
         />
-
-        {successMessage && (
-          <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="success">{successMessage}</Alert>
-          </Stack>
-        )}
         <Button
           sx={{ marginLeft: 13, width: 200, height: 40 }}
           variant="contained"
@@ -257,6 +249,14 @@ function Customer() {
         >
           Add Customer
         </Button>
+        {successMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
 
         <br />
         <div>
@@ -325,11 +325,6 @@ function Customer() {
             onChange={handleUpdateCustomerInputChange}
           />
 
-          {updateMessage && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="success">{updateMessage}</Alert>
-            </Stack>
-          )}
           <Button
             sx={{ marginLeft: 13, width: 200, height: 40 }}
             variant="contained"
@@ -338,6 +333,14 @@ function Customer() {
           >
             Update Customer
           </Button>
+          {updateMessage && (
+            <Stack
+              sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+              spacing={2}
+            >
+              <Alert severity="success">{updateMessage}</Alert>
+            </Stack>
+          )}
         </div>
         <br />
         <br />
@@ -459,13 +462,14 @@ function Customer() {
               </StyledTableRow>
             ))}
           </TableBody>
-          {deleteMessage && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="error">{deleteMessage}</Alert>
-            </Stack>
-          )}
         </Table>
       </TableContainer>
+      {deleteMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="error">{deleteMessage}</Alert>
+        </Stack>
+      )}
+      <br />
       <Typography
         style={{
           color: "white",

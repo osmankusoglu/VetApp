@@ -25,7 +25,7 @@ import Stack from "@mui/material/Stack";
 
 function Appointment() {
   const initState = {
-    id: null,
+    // id: null,
     appointmentDate: "",
     doctor: {
       id: null,
@@ -47,6 +47,7 @@ function Appointment() {
   };
 
   const [successMessage, setSuccessMessage] = useState(null);
+  const [filterMessage, setFilterMessage] = useState(null);
   const [updateMessage, setUpdateMessage] = useState(null);
   const [deleteMessage, setDeleteMessage] = useState(null);
   const [appointment, setAppointment] = useState([]);
@@ -77,6 +78,15 @@ function Appointment() {
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
+
+  useEffect(() => {
+    if (filterMessage) {
+      const timer = setTimeout(() => {
+        setFilterMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [filterMessage]);
 
   useEffect(() => {
     if (updateMessage) {
@@ -159,8 +169,9 @@ function Appointment() {
       )
       .then((res) => {
         console.log(res);
-        setSuccessMessage("Added successfully!");
-        setUpdate(true);
+        setAppointment((prevAppointment) => [...prevAppointment, res.data]);
+        setSuccessMessage("New appointment saved successfully!");
+        setUpdate(false);
         setNewAppointment({ ...initState });
       });
   };
@@ -175,7 +186,16 @@ function Appointment() {
       )
       .then((res) => {
         console.log(res);
-        setUpdateMessage("Updated successfully!");
+        setUpdateMessage("Appointment updated successfully!");
+
+        setAppointment((prevAppointments) => {
+          return prevAppointments.map((appointment) =>
+            appointment.id === updateAppointment.id
+              ? updateAppointment
+              : appointment
+          );
+        });
+
         setUpdate(false);
         setUpdateAppointment({ ...initState });
       });
@@ -186,7 +206,7 @@ function Appointment() {
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/appointments/${id}`)
       .then(() => {
         setAppointment(appointment.filter((app) => app.id !== id));
-        setDeleteMessage("Deleted successfully!");
+        setDeleteMessage("Appointment deleted successfully!");
       });
   };
 
@@ -207,6 +227,11 @@ function Appointment() {
     setSearchAnimal("");
     setStartDate("");
     setEndDate("");
+    setFilterMessage("Appointment list reset!");
+
+    setTimeout(() => {
+      setFilterMessage("");
+    }, 3000);
   };
 
   const filterAppointment = (
@@ -306,11 +331,6 @@ function Appointment() {
             ))}
           </Select>
         </FormControl>
-        {successMessage && (
-          <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="success">{successMessage}</Alert>
-          </Stack>
-        )}
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -319,6 +339,14 @@ function Appointment() {
         >
           Add Appointment
         </Button>
+        {successMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
       </div>
       <br />
       <Box>
@@ -384,11 +412,7 @@ function Appointment() {
             ))}
           </Select>
         </FormControl>
-        {updateMessage && (
-          <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="success">{updateMessage}</Alert>
-          </Stack>
-        )}
+
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -397,6 +421,14 @@ function Appointment() {
         >
           Update Appointment
         </Button>
+        {updateMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="success">{updateMessage}</Alert>
+          </Stack>
+        )}
       </Box>
       <br />
       <br />
@@ -460,6 +492,14 @@ function Appointment() {
         >
           Clear Filters
         </Button>
+        {filterMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="success">{filterMessage}</Alert>
+          </Stack>
+        )}
       </div>
 
       <TableContainer component={Paper}>
@@ -571,10 +611,14 @@ function Appointment() {
             ))}
           </TableBody>
           {deleteMessage && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
+            <Stack
+              sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+              spacing={2}
+            >
               <Alert severity="error">{deleteMessage}</Alert>
             </Stack>
           )}
+          <br />
         </Table>
       </TableContainer>
     </Box>
