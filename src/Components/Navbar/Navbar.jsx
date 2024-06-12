@@ -121,7 +121,7 @@ function Navbar() {
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Tooltip title="User Menu">
+            <Tooltip>
               <LocalHospitalIcon onClick={handleOpenUserMenu} />
             </Tooltip>
             <Menu
