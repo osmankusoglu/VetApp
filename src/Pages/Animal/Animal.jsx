@@ -130,8 +130,8 @@ function Animal() {
       `${import.meta.env.VITE_APP_BASE_URL}/api/v1/animals/${id}`,
       updateAnimal
     );
-    setUpdateMessage("Updated successfully!");
     setUpdate(false);
+    setUpdateMessage("Updated successfully!");
     setUpdateAnimal({
       id: "",
       name: "",
@@ -251,6 +251,7 @@ function Animal() {
         <TextField
           sx={{ marginLeft: 4, marginTop: 1 }}
           label="Date of Birth"
+          placeholder="YYYY-MM-DD"
           variant="standard"
           name="dateOfBirth"
           value={newAnimal.dateOfBirth}
@@ -285,11 +286,6 @@ function Animal() {
           </Select>
         </FormControl>
 
-        {successMessage && (
-          <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="success">{successMessage}</Alert>
-          </Stack>
-        )}
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -298,9 +294,13 @@ function Animal() {
         >
           Add Animal
         </Button>
-        <br />
-        <br />
       </div>
+
+      {successMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="success">{successMessage}</Alert>
+        </Stack>
+      )}
       <div>
         <br />
         <Typography
@@ -356,6 +356,7 @@ function Animal() {
         <TextField
           sx={{ marginLeft: 4, marginTop: 1 }}
           label="Date of Birth"
+          placeholder="YYYY-MM-DD"
           variant="standard"
           name="dateOfBirth"
           value={updateAnimal.dateOfBirth}
@@ -396,11 +397,7 @@ function Animal() {
             ))}
           </Select>
         </FormControl>
-        {updateMessage && (
-          <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="success">{updateMessage}</Alert>
-          </Stack>
-        )}
+
         <Button
           sx={{ marginLeft: 4, height: 54, width: 223 }}
           variant="contained"
@@ -409,10 +406,13 @@ function Animal() {
         >
           Update Animal
         </Button>
-        <br />
-        <br />
-        <br />
       </div>
+
+      {updateMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="success">{updateMessage}</Alert>
+        </Stack>
+      )}
       <br />
       <Typography
         style={{
@@ -600,13 +600,13 @@ function Animal() {
               </StyledTableRow>
             ))}
           </TableBody>
-          {deleteMessage && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="error">{deleteMessage}</Alert>
-            </Stack>
-          )}
         </Table>
       </TableContainer>
+      {deleteMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="error">{deleteMessage}</Alert>
+        </Stack>
+      )}
 
       <br />
     </Box>

@@ -109,11 +109,8 @@ function Report() {
       )
       .then(() => {
         setUpdate((prevUpdate) => !prevUpdate);
-        setNewReport({ ...initReport });
         setSuccessMessage("Report added successfully!");
-      })
-      .catch((error) => {
-        console.error("Error adding report:", error);
+        setNewReport({ ...initReport });
       });
   };
 
@@ -125,11 +122,8 @@ function Report() {
       )
       .then(() => {
         setUpdate((prevUpdate) => !prevUpdate);
-        setUpdateReport({ ...initReport });
         setUpdateMessage("Report updated successfully!");
-      })
-      .catch((error) => {
-        console.error("Error updating report:", error);
+        setUpdateReport({ ...initReport });
       });
   };
 
@@ -146,6 +140,10 @@ function Report() {
       ...prevReport,
       appointmentId: id,
     }));
+  };
+
+  const handleUpdateAppointmentSelectChange = (e) => {
+    const id = e.target.value;
     setUpdateReport((prevReport) => ({
       ...prevReport,
       appointmentId: id,
@@ -322,7 +320,7 @@ function Report() {
             id="SelectAppointmentId"
             label="Select Appointment ID"
             value={updateReport.appointmentId}
-            onChange={handleAppointmentSelectChange}
+            onChange={handleUpdateAppointmentSelectChange}
           >
             {appointment.map((appo) => (
               <MenuItem key={appo.id} value={appo.id}>
@@ -488,6 +486,7 @@ function Report() {
                 <StyledTableCell align="center">
                   {rep.appointment.doctorName}
                 </StyledTableCell>
+
                 <StyledTableCell align="center">
                   <Button
                     style={{ backgroundColor: "#f39c12", color: "white" }}
