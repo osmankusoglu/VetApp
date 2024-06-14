@@ -19,13 +19,15 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
 function Customer() {
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [updateMessage, setUpdateMessage] = useState(null);
-  const [deleteMessage, setDeleteMessage] = useState(null);
-  const [customer, setCustomer] = useState();
-  const [update, setUpdate] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null); // Başarı mesajı durumu
+  const [updateMessage, setUpdateMessage] = useState(null); // Güncelleme mesajı durumu
+  const [deleteMessage, setDeleteMessage] = useState(null); // Silme mesajı durumu
+  const [errorMessage, setErrorMessage] = useState(null); // Hata mesajı durumu
+  const [customer, setCustomer] = useState([]); // Müşteri listesi durumu
+  const [update, setUpdate] = useState(false); // Güncelleme durumu tetikleyici
+  const [searchValue, setSearchValue] = useState(""); // Arama değeri durumu
   const [newCustomer, setNewCustomer] = useState({
+    // Yeni müşteri durumu
     name: "",
     phone: "",
     email: "",
@@ -33,6 +35,7 @@ function Customer() {
     city: "",
   });
 
+  // Güncellenecek müşteri durumu
   const [updateCustomer, setUpdateCustomer] = useState({
     id: "",
     name: "",
@@ -42,6 +45,7 @@ function Customer() {
     city: "",
   });
 
+  // Silme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (deleteMessage) {
       const timer = setTimeout(() => {
@@ -51,6 +55,7 @@ function Customer() {
     }
   }, [deleteMessage]);
 
+  // Ekleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -60,6 +65,7 @@ function Customer() {
     }
   }, [successMessage]);
 
+  // Güncelleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (updateMessage) {
       const timer = setTimeout(() => {
@@ -69,6 +75,17 @@ function Customer() {
     }
   }, [updateMessage]);
 
+  // Hata mesajı göster ve 3 saniye göster
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  // Müşteri listesini API'dan çek ve duruma ata
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/customers")
@@ -77,6 +94,7 @@ function Customer() {
       .then(() => setUpdate(true));
   }, [update]);
 
+  // Yeni müşteri bilgilerini güncelleme
   const handleNewCustomerInputChange = (e) => {
     const { name, value } = e.target;
     setNewCustomer((prev) => ({
@@ -86,6 +104,15 @@ function Customer() {
   };
 
   const handleAddNewCustomer = () => {
+    const { name, phone, email, address, city } = newCustomer;
+
+    // Alanların boş olup olmadığını kontrol et
+    if (!name || !phone || !email || !address || !city) {
+      setErrorMessage("Please fill in all fields!");
+      return;
+    }
+
+    // API'ye yeni müşteri ekleme
     axios
       .post(
         import.meta.env.VITE_APP_BASE_URL + "/api/v1/customers",
@@ -105,6 +132,7 @@ function Customer() {
       });
   };
 
+  // Müşteri bilgilerini güncelleme
   const handleUpdateCustomer = () => {
     const { id } = updateCustomer;
     axios
@@ -126,6 +154,7 @@ function Customer() {
       });
   };
 
+  // Güncellenecek müşteri bilgilerini güncelleme
   const handleUpdateCustomerInputChange = (e) => {
     const { name, value } = e.target;
     setUpdateCustomer((prev) => ({
@@ -134,6 +163,7 @@ function Customer() {
     }));
   };
 
+  // Güncelle butonuna basıldığında ilgili müşteri bilgilerini getirme
   const handleUpdateCustomerBtn = (id) => {
     const selectedCustomer = customer.find((cust) => cust.id === id);
     if (selectedCustomer) {
@@ -141,6 +171,7 @@ function Customer() {
     }
   };
 
+  // Müşteriyi silme
   const handleDeleteCustomer = (e) => {
     const { id } = e.target;
     axios
@@ -149,6 +180,7 @@ function Customer() {
     setDeleteMessage("Deleted successfully!");
   };
 
+  // Arama sonuçlarına göre müşteri listesini filtreleme
   const filteredCustomers = customer?.filter((cust) =>
     cust.name.toLowerCase().includes(searchValue.toLowerCase())
   );
@@ -255,7 +287,14 @@ function Customer() {
             <Alert severity="success">{successMessage}</Alert>
           </Stack>
         )}
-
+        {errorMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="error">{errorMessage}</Alert>
+          </Stack>
+        )}
         <br />
         <div>
           <br />

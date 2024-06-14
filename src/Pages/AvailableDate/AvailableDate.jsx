@@ -37,13 +37,14 @@ function AvailableDate() {
     doctorId: "",
   };
 
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [deleteMessage, setDeleteMessage] = useState(null);
-  const [availableDate, setAvailableDate] = useState([]);
-  const [doctor, setDoctor] = useState([]);
-  const [update, setUpdate] = useState(false);
-  const [newDate, setNewDate] = useState({ ...initState });
+  const [successMessage, setSuccessMessage] = useState(null); // Başarı mesajı
+  const [deleteMessage, setDeleteMessage] = useState(null); // Silme mesajı
+  const [availableDate, setAvailableDate] = useState([]); // Mevcut tarihler
+  const [doctor, setDoctor] = useState([]); // API'den gelen doktor listesi
+  const [update, setUpdate] = useState(false); // Güncelleme durumu
+  const [newDate, setNewDate] = useState({ ...initState }); // Yeni tarih eklemek için
 
+  // Silme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (deleteMessage) {
       const timer = setTimeout(() => {
@@ -53,6 +54,7 @@ function AvailableDate() {
     }
   }, [deleteMessage]);
 
+  // Ekleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -62,6 +64,7 @@ function AvailableDate() {
     }
   }, [successMessage]);
 
+  // Yüklendiğinde ve update durumu değiştiğinde çalışacak olan useEffect
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/available-dates")
@@ -84,6 +87,7 @@ function AvailableDate() {
       .then(() => setUpdate(true));
   }, [update]);
 
+  // Yeni müsait gün eklemek
   const handleAddNewDate = () => {
     axios
       .post(import.meta.env.VITE_APP_BASE_URL + "/api/v1/available-dates", {
@@ -98,6 +102,7 @@ function AvailableDate() {
       });
   };
 
+  // Müsait gün silme işlemi
   const handleDeleteDate = (id) => {
     axios
       .delete(

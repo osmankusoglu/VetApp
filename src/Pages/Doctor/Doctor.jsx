@@ -20,12 +20,15 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
 function Doctor() {
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [updateMessage, setUpdateMessage] = useState(null);
-  const [deleteMessage, setDeleteMessage] = useState(null);
-  const [doctor, setDoctor] = useState();
-  const [update, setUpdate] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null); // Başarı mesajı
+  const [updateMessage, setUpdateMessage] = useState(null); // Güncelleme mesajı
+  const [deleteMessage, setDeleteMessage] = useState(null); // Silme mesajı
+  const [errorMessage, setErrorMessage] = useState(null); // Hata mesajı
+  const [doctor, setDoctor] = useState(); // Doktor listesi
+  const [update, setUpdate] = useState(false); // Güncelleme durumu
   const [newDoctor, setNewDoctor] = useState({
+    // Yeni doktor bilgileri
+
     name: "",
     phone: "",
     email: "",
@@ -33,6 +36,7 @@ function Doctor() {
     city: "",
   });
 
+  // Güncellenecek doktor bilgileri
   const [updateDoctor, setUpdateDoctor] = useState({
     id: "",
     name: "",
@@ -42,6 +46,7 @@ function Doctor() {
     city: "",
   });
 
+  // Silme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (deleteMessage) {
       const timer = setTimeout(() => {
@@ -51,6 +56,7 @@ function Doctor() {
     }
   }, [deleteMessage]);
 
+  // Ekleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -60,6 +66,7 @@ function Doctor() {
     }
   }, [successMessage]);
 
+  // Güncelleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (updateMessage) {
       const timer = setTimeout(() => {
@@ -69,6 +76,17 @@ function Doctor() {
     }
   }, [updateMessage]);
 
+  // Hata mesajı göster ve 3 saniye göster
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  // Doktor listesini API'den çekmek için kullanılan useEffect
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/doctors")
@@ -77,6 +95,7 @@ function Doctor() {
       .then(() => setUpdate(true));
   }, [update]);
 
+  // Yeni doktor bilgilerini güncelleme
   const handleNewDoctorInputChange = (e) => {
     const { name, value } = e.target;
     setNewDoctor((prev) => ({
@@ -85,7 +104,15 @@ function Doctor() {
     }));
   };
 
+  // Yeni doktor ekleme
   const handleAddNewDoctor = () => {
+    const { name, phone, email, address, city } = newDoctor;
+
+    // Alanların boş olup olmadığını kontrol et
+    if (!name || !phone || !email || !address || !city) {
+      setErrorMessage("Please fill in all fields!");
+      return;
+    }
     axios
       .post(import.meta.env.VITE_APP_BASE_URL + "/api/v1/doctors", newDoctor)
       .then((res) => {
@@ -102,6 +129,7 @@ function Doctor() {
       });
   };
 
+  // Doktor bilgilerini güncelleme
   const handleUpdateDoctor = () => {
     const { id } = updateDoctor;
     axios
@@ -124,6 +152,7 @@ function Doctor() {
       });
   };
 
+  // Güncellenecek doktor bilgilerini ayarlama
   const handleUpdateDoctorInputChange = (e) => {
     const { name, value } = e.target;
     setUpdateDoctor((prev) => ({
@@ -132,11 +161,13 @@ function Doctor() {
     }));
   };
 
+  // Güncelleme butonuna tıklayınca ilgili doktor bilgilerini getiren buton
   const handleUpdateDoctorBtn = (e) => {
     const index = e.target.id;
     setUpdateDoctor({ ...doctor[index] });
   };
 
+  // Doktor silme
   const handleDeleteDoctor = (e) => {
     const { id } = e.target;
     axios
@@ -251,6 +282,14 @@ function Doctor() {
             spacing={2}
           >
             <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
+        {errorMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="error">{errorMessage}</Alert>
           </Stack>
         )}
         <br />

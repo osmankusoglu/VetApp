@@ -23,6 +23,7 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
 function Animal() {
+  // Yeni hayvan ekleme formunun başlangıç durumu
   const initState = {
     name: "",
     species: "",
@@ -30,21 +31,24 @@ function Animal() {
     gender: "",
     dateOfBirth: "",
     colour: "",
-    customer: {},
+    customer: {}, // İlgili müşteri bilgisi
   };
 
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [updateMessage, setUpdateMessage] = useState(null);
-  const [deleteMessage, setDeleteMessage] = useState(null);
-  const [searchValue, setSearchValue] = useState("");
-  const [customerSearchValue, setCustomerSearchValue] = useState("");
-  const [animal, setAnimal] = useState([]);
-  const [customer, setCustomer] = useState([]);
-  const [update, setUpdate] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null); // Başarı mesajı
+  const [updateMessage, setUpdateMessage] = useState(null); // Güncelleme mesajı
+  const [deleteMessage, setDeleteMessage] = useState(null); // Silme mesajı
+  const [errorMessage, setErrorMessage] = useState(null); // Hata mesajı
+  const [searchValue, setSearchValue] = useState(""); // Arama değerleri için state'ler
+  const [customerSearchValue, setCustomerSearchValue] = useState(""); // Arama değerleri için state'ler
+  const [animal, setAnimal] = useState([]); // API'den gelen hayvan state
+  const [customer, setCustomer] = useState([]); // API'den gelen müşteri
+  const [update, setUpdate] = useState(false); // Güncelleme durumu
   const [newAnimal, setNewAnimal] = useState({
+    // Yeni hayvan bilgileri
     ...initState,
   });
 
+  // Hayvan güncelleme formu için kullanılan state
   const [updateAnimal, setUpdateAnimal] = useState({
     id: "",
     name: "",
@@ -56,6 +60,7 @@ function Animal() {
     customer: {},
   });
 
+  // Silme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (deleteMessage) {
       const timer = setTimeout(() => {
@@ -65,6 +70,7 @@ function Animal() {
     }
   }, [deleteMessage]);
 
+  // Ekleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -74,6 +80,7 @@ function Animal() {
     }
   }, [successMessage]);
 
+  // Güncelleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (updateMessage) {
       const timer = setTimeout(() => {
@@ -83,6 +90,17 @@ function Animal() {
     }
   }, [updateMessage]);
 
+  // Hata mesajı göster ve 3 saniye göster
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  // API'den hayvan ve müşteri verilerini çekmek için kullanılan useEffect
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/animals")
@@ -94,6 +112,7 @@ function Animal() {
       .then(() => setUpdate(true));
   }, [update]);
 
+  // Yeni hayvan formunun input değişikliklerini yönetir
   const handleNewAnimalInputChange = (e) => {
     const { name, value } = e.target;
     setNewAnimal((prev) => ({
@@ -103,6 +122,7 @@ function Animal() {
     console.log(newAnimal);
   };
 
+  // Müşteri seçim değişikliğini yönetir
   const handleCustomerSelectChange = (e) => {
     const id = e.target.value;
     const newCustomer = customer.find((cus) => cus.id === +id);
@@ -113,7 +133,22 @@ function Animal() {
     console.log(newAnimal);
   };
 
+  // Yeni hayvan ekleme
   const handleAddNewAnimal = () => {
+    const { name, species, breed, gender, dateOfBirth, colour, customer } =
+      newAnimal;
+    if (
+      !name ||
+      !species ||
+      !breed ||
+      !gender ||
+      !dateOfBirth ||
+      !colour ||
+      !customer
+    ) {
+      setErrorMessage("Please fill in all fields!");
+      return;
+    }
     axios
       .post(import.meta.env.VITE_APP_BASE_URL + "/api/v1/animals", newAnimal)
       .then((res) => {
@@ -124,6 +159,7 @@ function Animal() {
       });
   };
 
+  // Hayvan güncelleme işlemi
   const handleUpdateAnimal = () => {
     const { id } = updateAnimal;
     axios.put(
@@ -131,7 +167,7 @@ function Animal() {
       updateAnimal
     );
     setUpdate(false);
-    setUpdateMessage("Updated successfully!");
+    setUpdateMessage("Animal updated successfully!");
     setUpdateAnimal({
       id: "",
       name: "",
@@ -144,6 +180,7 @@ function Animal() {
     });
   };
 
+  // Güncelleme formunun input değişikliklerini yönetir
   const handleUpdateAnimalInputChange = (e) => {
     const { name, value } = e.target;
     setUpdateAnimal((prev) => ({
@@ -152,19 +189,22 @@ function Animal() {
     }));
   };
 
+  // Güncelleme düğmesine tıklanıldığında, ilgili hayvanı formda gösterir
   const handleUpdateAnimalBtn = (id) => {
     const selectedAnimal = animal.find((a) => a.id === id);
     setUpdateAnimal({ ...selectedAnimal });
   };
 
+  // Hayvan silme için kullanulan fonksiyon
   const handleDeleteAnimal = (e) => {
     const { id } = e.target;
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/animals/${id}`)
       .then(() => setUpdate(false));
-    setDeleteMessage("Deleted successfully!");
+    setDeleteMessage("Animal deleted successfully!");
   };
 
+  // Filtrelenmiş hayvan listesi
   const filteredAnimals = animal?.filter((anim) => {
     const animalNameMatch = anim.name
       .toLowerCase()
@@ -296,13 +336,18 @@ function Animal() {
           color="success"
           onClick={handleAddNewAnimal}
         >
-          ADD
+          Add Animal
         </Button>
       </div>
 
       {successMessage && (
-        <Stack sx={{ width: "100%" }} spacing={2}>
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
           <Alert severity="success">{successMessage}</Alert>
+        </Stack>
+      )}
+      {errorMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="error">{errorMessage}</Alert>
         </Stack>
       )}
 
@@ -413,32 +458,14 @@ function Animal() {
         color="success"
         onClick={handleUpdateAnimal}
       >
-        UPDATE
+        Update Animal
       </Button>
 
       {updateMessage && (
-        <Stack sx={{ width: "100%" }} spacing={2}>
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
           <Alert severity="success">{updateMessage}</Alert>
         </Stack>
       )}
-
-      <br />
-      <br />
-      <TextField
-        sx={{ marginLeft: 4, marginTop: 1 }}
-        label="Search Animal Name"
-        variant="standard"
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-      />
-
-      <TextField
-        sx={{ marginLeft: 4, marginTop: 1 }}
-        label="Search Customer Name"
-        variant="standard"
-        value={customerSearchValue}
-        onChange={(e) => setCustomerSearchValue(e.target.value)}
-      />
 
       <br />
       <br />
@@ -447,14 +474,105 @@ function Animal() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Animal Name</StyledTableCell>
-              <StyledTableCell>Species</StyledTableCell>
-              <StyledTableCell>Breed</StyledTableCell>
-              <StyledTableCell>Gender</StyledTableCell>
-              <StyledTableCell>Date of Birth</StyledTableCell>
-              <StyledTableCell>Colour</StyledTableCell>
-              <StyledTableCell>Customer Name</StyledTableCell>
-              <StyledTableCell>Actions</StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Animal Name
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Species
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Breed
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Gender
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Date of Birth
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Colour
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Customer Name
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Update
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  color: "white",
+                  backgroundColor: "#1abc9c",
+                  padding: "10px",
+                  fontSize: "20px",
+                }}
+                align="left"
+              >
+                Delete
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -479,6 +597,8 @@ function Animal() {
                   >
                     UPDATE
                   </Button>
+                </StyledTableCell>
+                <StyledTableCell>
                   <Button
                     style={{ backgroundColor: "#e74c3c", color: "white" }}
                     variant="contained"
@@ -495,10 +615,53 @@ function Animal() {
         </Table>
       </TableContainer>
       {deleteMessage && (
-        <Stack sx={{ width: "100%" }} spacing={2}>
-          <Alert severity="success">{deleteMessage}</Alert>
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="error">{deleteMessage}</Alert>
         </Stack>
       )}
+      <br />
+      <br />
+      <Typography
+        style={{
+          color: "white",
+          backgroundColor: "#1aec9c",
+          padding: "10px",
+          fontSize: "20px",
+        }}
+        sx={{ fontWeight: "700" }}
+      >
+        Search Animal Name
+      </Typography>
+      <TextField
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        label="Search Animal Name"
+        variant="standard"
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+      <br />
+      <br />
+      <Typography
+        style={{
+          color: "white",
+          backgroundColor: "#1aec9c",
+          padding: "10px",
+          fontSize: "20px",
+        }}
+        sx={{ fontWeight: "700" }}
+      >
+        Search Customer Name
+      </Typography>
+
+      <TextField
+        sx={{ marginLeft: 4, marginTop: 1 }}
+        label="Search Customer Name"
+        variant="standard"
+        value={customerSearchValue}
+        onChange={(e) => setCustomerSearchValue(e.target.value)}
+      />
+      <br />
+      <br />
     </Box>
   );
 }

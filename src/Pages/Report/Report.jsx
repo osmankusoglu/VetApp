@@ -32,16 +32,18 @@ const initReport = {
 };
 
 function Report() {
-  const [searchValue, setSearchValue] = useState("");
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [updateMessage, setUpdateMessage] = useState(null);
-  const [deleteMessage, setDeleteMessage] = useState(null);
-  const [report, setReport] = useState([]);
-  const [appointment, setAppointment] = useState([]);
-  const [newReport, setNewReport] = useState({ ...initReport });
-  const [update, setUpdate] = useState(false);
-  const [updateReport, setUpdateReport] = useState({ ...initReport });
+  const [searchValue, setSearchValue] = useState(""); // Arama değeri
+  const [successMessage, setSuccessMessage] = useState(null); // Başarı mesajı
+  const [updateMessage, setUpdateMessage] = useState(null); // Güncelleme mesajı
+  const [deleteMessage, setDeleteMessage] = useState(null); // Silme mesajı
+  const [errorMessage, setErrorMessage] = useState(null); // Hata mesajı
+  const [report, setReport] = useState([]); // Tüm raporlar
+  const [appointment, setAppointment] = useState([]); // Tüm randevular
+  const [newReport, setNewReport] = useState({ ...initReport }); // Yeni rapor
+  const [update, setUpdate] = useState(false); // Güncelleme tetikleyici
+  const [updateReport, setUpdateReport] = useState({ ...initReport }); // Güncellenecek rapor
 
+  // Silme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (deleteMessage) {
       const timer = setTimeout(() => {
@@ -51,6 +53,7 @@ function Report() {
     }
   }, [deleteMessage]);
 
+  // Ekleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -60,6 +63,7 @@ function Report() {
     }
   }, [successMessage]);
 
+  // Güncelleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (updateMessage) {
       const timer = setTimeout(() => {
@@ -69,6 +73,17 @@ function Report() {
     }
   }, [updateMessage]);
 
+  // Hata mesajı göster ve 3 saniye göster
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  // Verilerin API'den çekilmesi
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/reports")
@@ -85,7 +100,16 @@ function Report() {
       });
   }, [update]);
 
+  // Yeni rapor eklemek
   const handleAddNewReport = () => {
+    const { title, diagnosis, price } = newReport;
+
+    // Alanların boş olup olmadığını kontrol et
+    if (!title || !diagnosis || !price) {
+      setErrorMessage("Please fill in all fields!");
+      return;
+    }
+    // Seçilen randevunun geçerliliğini kontrol et
     const selectedAppointment = appointment.find(
       (app) => app.id === newReport.appointmentId
     );
@@ -95,6 +119,7 @@ function Report() {
       return;
     }
 
+    // Yeni rapor objesini güncelle
     const updatedReport = {
       ...newReport,
       customerName: selectedAppointment.customerName,
@@ -102,6 +127,7 @@ function Report() {
       animalName: selectedAppointment.animalName,
     };
 
+    // API'ye yeni raporu ekle
     axios
       .post(
         import.meta.env.VITE_APP_BASE_URL + "/api/v1/reports",
@@ -114,6 +140,7 @@ function Report() {
       });
   };
 
+  // Raporu güncelleme
   const handleUpdateReport = (id, updatedReport) => {
     axios
       .put(
@@ -127,6 +154,7 @@ function Report() {
       });
   };
 
+  // Raporu silme
   const handleDeleteReport = (id) => {
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/reports/${id}`)
@@ -134,6 +162,7 @@ function Report() {
     setDeleteMessage("Report deleted successfully!");
   };
 
+  // Yeni rapor eklerken randevu seçimi
   const handleAppointmentSelectChange = (e) => {
     const id = e.target.value;
     setNewReport((prevReport) => ({
@@ -142,6 +171,7 @@ function Report() {
     }));
   };
 
+  // Güncellenen rapor için randevu seçimi
   const handleUpdateAppointmentSelectChange = (e) => {
     const id = e.target.value;
     setUpdateReport((prevReport) => ({
@@ -150,7 +180,8 @@ function Report() {
     }));
   };
 
-  const handleEditReport = (rep) => {
+  // Bir raporu düzenlemek için işlemler
+  const handleUpdatedReport = (rep) => {
     setUpdateReport({
       id: rep.id,
       title: rep.title,
@@ -160,6 +191,7 @@ function Report() {
     });
   };
 
+  // Arama değerine göre raporları filtrele
   const filteredReport = report?.filter((rep) =>
     rep.title.toLowerCase().includes(searchValue.toLowerCase())
   );
@@ -260,6 +292,11 @@ function Report() {
       {successMessage && (
         <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
           <Alert severity="success">{successMessage}</Alert>
+        </Stack>
+      )}
+      {errorMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="error">{errorMessage}</Alert>
         </Stack>
       )}
       <br />
@@ -492,7 +529,7 @@ function Report() {
                     style={{ backgroundColor: "#f39c12", color: "white" }}
                     variant="contained"
                     endIcon={<SendIcon />}
-                    onClick={() => handleEditReport(rep)}
+                    onClick={() => handleUpdatedReport(rep)}
                   >
                     UPDATE
                   </Button>

@@ -46,21 +46,22 @@ function Appointment() {
     },
   };
 
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [filterMessage, setFilterMessage] = useState(null);
-  const [updateMessage, setUpdateMessage] = useState(null);
-  const [deleteMessage, setDeleteMessage] = useState(null);
-  const [appointment, setAppointment] = useState([]);
-  const [doctor, setDoctor] = useState([]);
-  const [animal, setAnimal] = useState([]);
-  const [update, setUpdate] = useState(false);
-  const [newAppointment, setNewAppointment] = useState({ ...initState });
-  const [updateAppointment, setUpdateAppointment] = useState({ ...initState });
-  const [searchDoctor, setSearchDoctor] = useState("");
-  const [searchAnimal, setSearchAnimal] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null); // Başarı mesajı
+  const [filterMessage, setFilterMessage] = useState(null); // Filtreleme mesajı
+  const [updateMessage, setUpdateMessage] = useState(null); // Güncelleme mesajı
+  const [deleteMessage, setDeleteMessage] = useState(null); // Silme mesajı
+  const [appointment, setAppointment] = useState([]); // Randevular için state
+  const [doctor, setDoctor] = useState([]); // Doktorlar için state.
+  const [animal, setAnimal] = useState([]); // Hayvanlar için state.
+  const [update, setUpdate] = useState(false); // Güncelleme işlemi için state.
+  const [newAppointment, setNewAppointment] = useState({ ...initState }); // Yeni randevu eklemek için state.
+  const [updateAppointment, setUpdateAppointment] = useState({ ...initState }); // Randevu güncellemek için state.
+  const [searchDoctor, setSearchDoctor] = useState(""); // Doktor arama için state.
+  const [searchAnimal, setSearchAnimal] = useState(""); // Hayvan arama  için state.
+  const [startDate, setStartDate] = useState(""); // Başlangıç tarihi için state.
+  const [endDate, setEndDate] = useState(""); // Bitiş tarihi için state.
 
+  // Silme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (deleteMessage) {
       const timer = setTimeout(() => {
@@ -70,6 +71,7 @@ function Appointment() {
     }
   }, [deleteMessage]);
 
+  // Ekleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -79,6 +81,7 @@ function Appointment() {
     }
   }, [successMessage]);
 
+  // Filtreleme temizlendiinde göster ve 3 saniye göster
   useEffect(() => {
     if (filterMessage) {
       const timer = setTimeout(() => {
@@ -88,6 +91,7 @@ function Appointment() {
     }
   }, [filterMessage]);
 
+  // Güncelleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (updateMessage) {
       const timer = setTimeout(() => {
@@ -97,6 +101,7 @@ function Appointment() {
     }
   }, [updateMessage]);
 
+  // randevu, doktor ve hayvan verilerini getir.
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/appointments")
@@ -109,6 +114,7 @@ function Appointment() {
       .then((res) => setAnimal(res.data.content));
   }, []);
 
+  // Yeni randevu formunun input değişikliklerini yönetir
   const handleNewAppointmentInputChange = (e) => {
     const { name, value } = e.target;
     setNewAppointment((prev) => ({
@@ -117,7 +123,8 @@ function Appointment() {
     }));
   };
 
-  const handleEditAppointmentInputChange = (e) => {
+  // Randevu güncelleme bilgilerini handle eder.
+  const handleUpdateAppointmentInputChange = (e) => {
     const { name, value } = e.target;
     setUpdateAppointment((prev) => ({
       ...prev,
@@ -125,6 +132,7 @@ function Appointment() {
     }));
   };
 
+  // Yeni randevu için doktor seçimi
   const handleDoctorSelectChange = (e) => {
     const id = e.target.value;
     const selectedDoctor = doctor.find((doc) => doc.id === +id);
@@ -134,7 +142,8 @@ function Appointment() {
     }));
   };
 
-  const handleEditDoctorSelectChange = (e) => {
+  // Randevu güncelleme için doktor seçimi
+  const handleUpdateDoctorSelectChange = (e) => {
     const id = e.target.value;
     const selectedDoctor = doctor.find((doc) => doc.id === +id);
     setUpdateAppointment((prev) => ({
@@ -143,6 +152,7 @@ function Appointment() {
     }));
   };
 
+  // Yeni randevu için hayvan seçimi
   const handleAnimalSelectChange = (e) => {
     const id = e.target.value;
     const selectedAnimal = animal.find((ani) => ani.id === +id);
@@ -152,7 +162,8 @@ function Appointment() {
     }));
   };
 
-  const handleEditAnimalSelectChange = (e) => {
+  // Randevu güncelleme için hayvan seçimi
+  const handleUpdateAnimalSelectChange = (e) => {
     const id = e.target.value;
     const selectedAnimal = animal.find((ani) => ani.id === +id);
     setUpdateAppointment((prev) => ({
@@ -161,6 +172,7 @@ function Appointment() {
     }));
   };
 
+  // Yeni randevu ekler.
   const handleAddNewAppointment = () => {
     axios
       .post(
@@ -176,6 +188,7 @@ function Appointment() {
       });
   };
 
+  // Randevuyu günceller.
   const handleUpdateAppointment = () => {
     axios
       .put(
@@ -201,6 +214,7 @@ function Appointment() {
       });
   };
 
+  // Randevuyu siler.
   const handleDeleteAppointment = (id) => {
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/appointments/${id}`)
@@ -210,18 +224,22 @@ function Appointment() {
       });
   };
 
+  // Randevuyu güncellemeyi başlkatır
   const handleNewUpdateAppointment = (appointment) => {
     setUpdateAppointment(appointment);
   };
 
+  // Doktor arama
   const handleDoctorSearchTermChange = (e) => {
     setSearchDoctor(e.target.value);
   };
 
+  // Hayvan arama
   const handleAnimalSearchTermChange = (e) => {
     setSearchAnimal(e.target.value);
   };
 
+  // Filtreleri temizler.
   const clearFilters = () => {
     setSearchDoctor("");
     setSearchAnimal("");
@@ -234,6 +252,7 @@ function Appointment() {
     }, 3000);
   };
 
+  // Randevuları filtrelere göre getirir.
   const filterAppointment = (
     appointment,
     doctorTerm,
@@ -371,7 +390,7 @@ function Appointment() {
           variant="standard"
           name="appointmentDate"
           value={updateAppointment.appointmentDate}
-          onChange={handleEditAppointmentInputChange}
+          onChange={handleUpdateAppointmentInputChange}
           InputLabelProps={{
             shrink: true,
           }}
@@ -385,7 +404,7 @@ function Appointment() {
             id="SelectDoctor select-label"
             label="Select Doctor"
             value={updateAppointment.doctor?.id || ""}
-            onChange={handleEditDoctorSelectChange}
+            onChange={handleUpdateDoctorSelectChange}
           >
             {doctor?.map((doc) => (
               <MenuItem key={doc.id} value={doc.id}>
@@ -403,7 +422,7 @@ function Appointment() {
             id="SelectAnimal select-label"
             label="Select Animal"
             value={updateAppointment.animal?.id || ""}
-            onChange={handleEditAnimalSelectChange}
+            onChange={handleUpdateAnimalSelectChange}
           >
             {animal?.map((ani) => (
               <MenuItem key={ani.id} value={ani.id}>
@@ -509,7 +528,6 @@ function Appointment() {
             color: "white",
             backgroundColor: "#1abc9c",
             padding: "10px",
-            borderRadius: "4px",
             fontSize: "30px",
             marginTop: "20px",
           }}
@@ -610,17 +628,14 @@ function Appointment() {
               </TableRow>
             ))}
           </TableBody>
-          {deleteMessage && (
-            <Stack
-              sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
-              spacing={2}
-            >
-              <Alert severity="error">{deleteMessage}</Alert>
-            </Stack>
-          )}
-          <br />
         </Table>
       </TableContainer>
+      {deleteMessage && (
+        <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
+          <Alert severity="error">{deleteMessage}</Alert>
+        </Stack>
+      )}
+      <br />
     </Box>
   );
 }

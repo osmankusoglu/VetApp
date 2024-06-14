@@ -38,17 +38,26 @@ function Vaccination() {
     },
   };
 
+  // Başarı, silme, filtre ve hata mesajları
   const [successMessage, setSuccessMessage] = useState(null);
   const [deleteMessage, setDeleteMessage] = useState(null);
   const [filterMessage, setFilterMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  // Aşı ve hayvan verileri için durumlar
   const [vaccinations, setVaccinations] = useState([]);
   const [animals, setAnimals] = useState([]);
+
+  // Yeni eklenen aşının durumu ve arama terimi
   const [newVaccination, setNewVaccination] = useState({ ...initState });
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Filtreleme için tarih aralığı durumları
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   // const [update, setUpdate] = useState(false);
 
+  // Tüm aşıları ve hayvanları ilk yükleme sırasında almak için useEffect
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/vaccinations")
@@ -58,6 +67,7 @@ function Vaccination() {
       .then((res) => setAnimals(res.data.content));
   }, []);
 
+  // Tarih aralığına göre aşıları filtrelemek için useEffect
   useEffect(() => {
     if (startDate && endDate) {
       const formattedStartDate = formatDate(startDate);
@@ -75,6 +85,7 @@ function Vaccination() {
     }
   }, [startDate, endDate]);
 
+  // Silme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (deleteMessage) {
       const timer = setTimeout(() => {
@@ -84,6 +95,7 @@ function Vaccination() {
     }
   }, [deleteMessage]);
 
+  // Ekleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -93,6 +105,17 @@ function Vaccination() {
     }
   }, [successMessage]);
 
+  // Hata mesajı göster ve 3 saniye göster
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  // Filtreleme mesajı göster ve 3 saniye göster
   useEffect(() => {
     if (filterMessage) {
       const timer = setTimeout(() => {
@@ -102,6 +125,7 @@ function Vaccination() {
     }
   }, [filterMessage]);
 
+  // Yeni aşı bilgileri için input değişiklikleri
   const handleNewVaccinationInputChange = (e) => {
     const { name, value } = e.target;
     setNewVaccination((prev) => ({
@@ -110,6 +134,7 @@ function Vaccination() {
     }));
   };
 
+  // Hayvan seçimi değişikliği
   const handleAnimalSelectChange = (e) => {
     const id = e.target.value;
     const selectedAnimal = animals.find((ani) => ani.id === +id);
@@ -119,7 +144,17 @@ function Vaccination() {
     }));
   };
 
+  // Yeni aşı ekleme işlemi
   const handleAddNewVaccination = () => {
+    const { name, code, protectionStartDate, protectionFinishDate } =
+      newVaccination;
+
+    // Alanların boş olup olmadığını kontrol et
+    if (!name || !code || !protectionStartDate || !protectionFinishDate) {
+      setErrorMessage("Please fill in all fields!");
+      return;
+    }
+    // API'ye yeni aşıyı post etme
     axios
       .post(
         `${import.meta.env.VITE_APP_BASE_URL}/api/v1/vaccinations`,
@@ -135,6 +170,7 @@ function Vaccination() {
       });
   };
 
+  // Aşı silme işlemi
   const handleDeleteVaccination = (id) => {
     axios
       .delete(`${import.meta.env.VITE_APP_BASE_URL}/api/v1/vaccinations/${id}`)
@@ -144,10 +180,12 @@ function Vaccination() {
       });
   };
 
+  // Arama
   const handleSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
+  // Hayvan ismine göre arama yapma
   const searchByAnimalName = (vaccinations, searchTerm) => {
     if (!Array.isArray(vaccinations) || vaccinations.length === 0) {
       return [];
@@ -160,11 +198,13 @@ function Vaccination() {
     );
   };
 
+  // Tarih formatını ayarlama
   const formatDate = (dateString) => {
     const [day, month, year] = dateString.split(".");
     return `${year}-${month}-${day}`;
   };
 
+  // Filtreleri temizleme işlemi
   const clearFilters = () => {
     setSearchTerm("");
     setStartDate("");
@@ -287,6 +327,14 @@ function Vaccination() {
             <Alert severity="success">{successMessage}</Alert>
           </Stack>
         )}
+        {errorMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="error">{errorMessage}</Alert>
+          </Stack>
+        )}
       </div>
       <br />
 
@@ -381,7 +429,7 @@ function Vaccination() {
           </TableBody>
         </Table>
       </TableContainer>
-      <br />
+
       {deleteMessage && (
         <Stack sx={{ width: "80%", marginLeft: 10, marginTop: 5 }} spacing={2}>
           <Alert severity="error">{deleteMessage}</Alert>
