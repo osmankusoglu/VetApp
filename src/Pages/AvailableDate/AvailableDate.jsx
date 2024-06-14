@@ -41,7 +41,6 @@ function AvailableDate() {
   const [deleteMessage, setDeleteMessage] = useState(null); // Silme mesajı
   const [availableDate, setAvailableDate] = useState([]); // Mevcut tarihler
   const [doctor, setDoctor] = useState([]); // API'den gelen doktor listesi
-  const [update, setUpdate] = useState(false); // Güncelleme durumu
   const [newDate, setNewDate] = useState({ ...initState }); // Yeni tarih eklemek için
 
   // Silme başarılıysa göster ve 3 saniye göster
@@ -64,8 +63,9 @@ function AvailableDate() {
     }
   }, [successMessage]);
 
-  // Yüklendiğinde ve update durumu değiştiğinde çalışacak olan useEffect
-  useEffect(() => {
+  // Veri çekme işlemleri için bir fonksiyon tanımlayalım
+  const fetchData = () => {
+    // Available Dates'leri çek
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/available-dates")
       .then((res) => {
@@ -77,15 +77,26 @@ function AvailableDate() {
             : "N/A",
         }));
         setAvailableDate(fetchedDates);
-      })
-      .then(() => setUpdate(true));
+      });
+
+    // Doktor verilerini API'den çekmek için kullanılan useEffect
     axios
       .get(import.meta.env.VITE_APP_BASE_URL + "/api/v1/doctors")
       .then((res) => {
         setDoctor(res.data.content);
-      })
-      .then(() => setUpdate(true));
-  }, [update]);
+      });
+  };
+
+  // Sayfa yüklendiğinde ve veri güncellendiğinde verileri çek
+  useEffect(() => {
+    fetchData();
+
+    const interval = setInterval(() => {
+      fetchData();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Yeni müsait gün eklemek
   const handleAddNewDate = () => {
@@ -97,8 +108,8 @@ function AvailableDate() {
       .then((res) => {
         console.log(res);
         setSuccessMessage("Doctor's available day added successfully!");
-        setUpdate(false);
         setNewDate({ ...initState });
+        fetchData(); // Verileri güncelle
       });
   };
 
@@ -108,8 +119,10 @@ function AvailableDate() {
       .delete(
         `${import.meta.env.VITE_APP_BASE_URL}/api/v1/available-dates/${id}`
       )
-      .then(() => setUpdate(false));
-    setDeleteMessage("Doctor's available day deleted successfully!");
+      .then(() => {
+        setDeleteMessage("Doctor's available day deleted successfully!");
+        fetchData(); // Verileri güncelle
+      });
   };
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -254,7 +267,6 @@ function AvailableDate() {
             {availableDate?.map((date, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row" align="center">
-                  {console.log("Work Date:", date.workDate)}{" "}
                   {date.workDay !== "N/A"
                     ? dayjs(date.workDay).format("YYYY-MM-DD")
                     : "Invalid Date"}
