@@ -50,6 +50,7 @@ function Appointment() {
   const [filterMessage, setFilterMessage] = useState(null); // Filtreleme mesajı
   const [updateMessage, setUpdateMessage] = useState(null); // Güncelleme mesajı
   const [deleteMessage, setDeleteMessage] = useState(null); // Silme mesajı
+  const [errorMessage, setErrorMessage] = useState(null); // Hata mesajı
   const [appointment, setAppointment] = useState([]); // Randevular için state
   const [doctor, setDoctor] = useState([]); // Doktorlar için state.
   const [animal, setAnimal] = useState([]); // Hayvanlar için state.
@@ -70,6 +71,16 @@ function Appointment() {
       return () => clearTimeout(timer);
     }
   }, [deleteMessage]);
+
+  // Hata mesajı 3 saniye göster
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   // Ekleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
@@ -185,6 +196,13 @@ function Appointment() {
         setSuccessMessage("New appointment saved successfully!");
         setUpdate(false);
         setNewAppointment({ ...initState });
+      })
+      // doktorun müsait günü yoksa hata mesajı yollar
+      .catch((error) => {
+        console.error("Error adding appointment: ", error);
+        setErrorMessage(
+          "The doctor does not have any days available on this date!"
+        );
       });
   };
 
@@ -364,6 +382,14 @@ function Appointment() {
             spacing={2}
           >
             <Alert severity="success">{successMessage}</Alert>
+          </Stack>
+        )}
+        {errorMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="error">{errorMessage}</Alert>
           </Stack>
         )}
       </div>

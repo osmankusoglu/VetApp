@@ -137,6 +137,12 @@ function Report() {
         setUpdate((prevUpdate) => !prevUpdate);
         setSuccessMessage("Report added successfully!");
         setNewReport({ ...initReport });
+      })
+      .catch((error) => {
+        console.error("Error adding report:", error);
+        setErrorMessage(
+          "The report could not be added. Because the report was created before this date."
+        );
       });
   };
 
