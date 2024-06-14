@@ -281,7 +281,9 @@ function Report() {
           >
             {appointment.map((appo) => (
               <MenuItem key={appo.id} value={appo.id}>
-                {new Date(appo.appointmentDate).toLocaleDateString()}
+                {`Date:${appo.appointmentDate.split("T")[0]} / Time:${
+                  appo.appointmentDate.split("T")[1]
+                } /  Animal: ${appo.animal.name}`}
               </MenuItem>
             ))}
           </Select>
@@ -367,7 +369,9 @@ function Report() {
           >
             {appointment.map((appo) => (
               <MenuItem key={appo.id} value={appo.id}>
-                {new Date(appo.appointmentDate).toLocaleDateString()}
+                {`Date:${appo.appointmentDate.split("T")[0]} / Time:${
+                  appo.appointmentDate.split("T")[1]
+                } /  Animal: ${appo.animal.name}`}
               </MenuItem>
             ))}
           </Select>

@@ -51,6 +51,7 @@ function Appointment() {
   const [updateMessage, setUpdateMessage] = useState(null); // Güncelleme mesajı
   const [deleteMessage, setDeleteMessage] = useState(null); // Silme mesajı
   const [errorMessage, setErrorMessage] = useState(null); // Hata mesajı
+  const [errorsMessage, setErrorsMessage] = useState(null); // Hata mesajı
   const [appointment, setAppointment] = useState([]); // Randevular için state
   const [doctor, setDoctor] = useState([]); // Doktorlar için state.
   const [animal, setAnimal] = useState([]); // Hayvanlar için state.
@@ -81,6 +82,15 @@ function Appointment() {
       return () => clearTimeout(timer);
     }
   }, [errorMessage]);
+
+  useEffect(() => {
+    if (errorsMessage) {
+      const timer = setTimeout(() => {
+        setErrorsMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorsMessage]);
 
   // Ekleme başarılıysa göster ve 3 saniye göster
   useEffect(() => {
@@ -229,6 +239,10 @@ function Appointment() {
 
         setUpdate(false);
         setUpdateAppointment({ ...initState });
+      })
+      .catch((error) => {
+        console.error("Error adding appointment: ", error);
+        setErrorsMessage("Appointment times cannot be the same! Add new time!");
       });
   };
 
@@ -472,6 +486,14 @@ function Appointment() {
             spacing={2}
           >
             <Alert severity="success">{updateMessage}</Alert>
+          </Stack>
+        )}
+        {errorsMessage && (
+          <Stack
+            sx={{ width: "80%", marginLeft: 10, marginTop: 5 }}
+            spacing={2}
+          >
+            <Alert severity="error">{errorsMessage}</Alert>
           </Stack>
         )}
       </Box>
