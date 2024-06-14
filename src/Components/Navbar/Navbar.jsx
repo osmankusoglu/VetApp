@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   AppBar,
@@ -11,16 +10,17 @@ import {
 } from "@mui/material";
 import PetsIcon from "@mui/icons-material/Pets";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import { useState } from "react";
 
 const pagesRouter = [
-  { route: "/appointment", title: "Appointment" },
-  { route: "/vaccination", title: "Vaccination" },
-  { route: "/report", title: "Report" },
+  { route: "appointment", title: "Appointment" },
+  { route: "vaccination", title: "Vaccination" },
+  { route: "report", title: "Report" },
 ];
 const pagesRouters = [
-  { route: "/customer", title: "Customer" },
-  { route: "/doctor", title: "Doctor" },
-  { route: "/animal", title: "Animal" },
+  { route: "customer", title: "Customer" },
+  { route: "doctor", title: "Doctor" },
+  { route: "animal", title: "Animal" },
 ];
 
 function Navbar() {
@@ -99,7 +99,7 @@ function Navbar() {
               <Button
                 key={index}
                 component={Link}
-                to={`/${page.route}`}
+                to={page.route}
                 onClick={handleCloseNavMenu}
                 sx={{
                   my: 2,

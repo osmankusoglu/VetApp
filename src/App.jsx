@@ -1,5 +1,4 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-
 import Home from "./Pages/Home/Home";
 import Customer from "./Pages/Customer/Customer";
 import Doctor from "./Pages/Doctor/Doctor";
@@ -20,13 +19,13 @@ function App() {
       {!hideNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/customer" element={<Customer />} />
-        <Route path="/doctor" element={<Doctor />} />
-        <Route path="/animal" element={<Animal />} />
-        <Route path="/appointment" element={<Appointment />} />
-        <Route path="/availableDate" element={<AvailableDate />} />
-        <Route path="/vaccination" element={<Vaccination />} />
-        <Route path="/report" element={<Report />} />
+        <Route path="customer" element={<Customer />} />
+        <Route path="doctor" element={<Doctor />} />
+        <Route path="animal" element={<Animal />} />
+        <Route path="appointment" element={<Appointment />} />
+        <Route path="availableDate" element={<AvailableDate />} />
+        <Route path="vaccination" element={<Vaccination />} />
+        <Route path="report" element={<Report />} />
       </Routes>
     </div>
   );
