@@ -1,26 +1,22 @@
-# Vet App
-This project is a web application developed for veterinary clinics. CRUD operations can be performed on entities such as customer, doctor, animal, appointment, and vaccination. In addition, related data entries such as customer's animal record, veterinarian doctor record, and available day record for veterinarian doctor can be added.
+## Veterinary Clinic Management System
+This project is a React web application developed for a Veterinary Clinic Management System. The application is designed to fetch and display data such as customers, animals, doctors, appointments, vaccinations, and reports from the backend on the user interface. Below, you can find detailed information about the technologies used, how to get started, and the features of the application.
 
-# Live Application
-You can access the live application here.
+### Technologies Used
+**Framework**: React
 
-# Technologies Used
-Single Page App was built using Vite React.
-User interface was designed using Material-UI.
-Axios was used for CRUD operations.
+**UI Library**: Material-UI
 
-# Backend live URL
-https://planned-regine-osmankusoglu-4a5d08f4.koyeb.app
+**Dependency Management**: npm
 
-# Backend repository
-https://github.com/osmankusoglu/Vet-Application-Backend
+**Data Exchange**: Axios
 
-# Features
-# Customer: Add, update, delete, and list customers.
-- Animal: Add, update, delete, and list animals. Animals belonging to each customer can be listed.
-- Doctor: Add, update, delete, and list doctors. Available days for each doctor can be listed.
-- Appointment: Create appointments for animals and doctors. Appointments can be listed and updated.
-- Vaccination: Add vaccination for animals. Vaccinations can be listed and updated.
-- Report: Create a report for each appointment.
-
-
+## Features
+#### The application can perform data exchange with the backend API using the following features:
+- Customers: List of customers, add, update, delete, filter by name.
+- Animals: List of animals, add, update, delete, filter by name.
+- Doctors: List of doctors, add, update, delete.
+- Appointments: List of appointments, add, update, delete, filter by doctor name and animal name, filter by date range.
+- Vaccinations: List of vaccinations, add, update, delete, filter by animal name and date range.
+- Reports: List of reports, add, update, delete, filter by title.
+## Deployment
+The backend is currently deployed on the Koyeb serverless platform at https://planned-regine-osmankusoglu-4a5d08f4.koyeb.app. This deployment automatically synchronizes changes made to this repository.
