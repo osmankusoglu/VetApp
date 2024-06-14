@@ -99,7 +99,7 @@ function Navbar() {
               <Button
                 key={index}
                 component={Link}
-                to={page.route}
+                to={`/${page.route}`}
                 onClick={handleCloseNavMenu}
                 sx={{
                   my: 2,
