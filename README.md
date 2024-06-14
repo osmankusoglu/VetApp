@@ -19,4 +19,4 @@ This project is a React web application developed for a Veterinary Clinic Manage
 - Vaccinations: List of vaccinations, add, update, delete, filter by animal name and date range.
 - Reports: List of reports, add, update, delete, filter by title.
 ## Deployment
-The backend is currently deployed on the Koyeb serverless platform at https://planned-regine-osmankusoglu-4a5d08f4.koyeb.app. This deployment automatically synchronizes changes made to this repository.
+The backend is currently deployed on the Koyeb serverless platform at https://vet-application-backend.onrender.com This deployment automatically synchronizes changes made to this repository.
